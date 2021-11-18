@@ -33,7 +33,7 @@ CREATE TABLE `acl_route` (
   `updatedAt` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `key` (`key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,6 +42,7 @@ CREATE TABLE `acl_route` (
 
 LOCK TABLES `acl_route` WRITE;
 /*!40000 ALTER TABLE `acl_route` DISABLE KEYS */;
+INSERT INTO `acl_route` VALUES (1,0,16,'用户状态切换','PUT:/userStatus','53976db786a21502','2021-11-18 07:45:57','2021-11-18 07:53:28'),(2,0,16,'用户列表','GET:/users','579e469e8ac850de','2021-11-18 07:45:57','2021-11-18 07:53:28'),(3,0,16,'用户选择器','GET:/userOptions','04ebae36e0be27c9','2021-11-18 07:45:57','2021-11-18 07:53:28'),(7,0,16,'创建用户','POST:/users','a71cb59835c613f3','2021-11-18 07:45:57','2021-11-18 07:53:28'),(8,0,17,'创建用户分组','POST:/userGroups','0b56c2afb73f8e8a','2021-11-18 07:45:57','2021-11-18 07:53:28'),(9,0,17,'用户分组列表','GET:/userGroups','468764ba28e2122b','2021-11-18 07:45:57','2021-11-18 07:53:28'),(10,0,16,'用户分组选项','GET:/groupOptions','2b42ab90c0a53071','2021-11-18 07:45:57','2021-11-18 07:53:28'),(13,0,15,'角色列表','GET:/userRoles','bfe0d93815eb324a','2021-11-18 07:45:57','2021-11-18 07:53:28'),(14,0,16,'角色选择器','GET:/userRoleOptions','56cc05c94b7e9c0d','2021-11-18 07:45:57','2021-11-18 07:53:28'),(15,0,15,'创建角色','POST:/userRoles','17667fd304a571b8','2021-11-18 07:45:57','2021-11-18 07:53:28'),(16,0,16,'编辑用户','PUT:/users/{userId}','55dc1a28dc645b45','2021-11-18 07:45:57','2021-11-18 07:53:28'),(17,0,16,'删除用户','DELETE:/users/{userId}','66047762b72db5e4','2021-11-18 07:45:57','2021-11-18 07:53:28'),(18,0,16,'用户详情','GET:/users/{userId}','53012413d1d95634','2021-11-18 07:45:57','2021-11-18 07:53:28'),(19,0,17,'编辑用户分组','PUT:/userGroups/{groupId}','d458a64979d1b684','2021-11-18 07:45:57','2021-11-18 07:53:28'),(20,0,17,'用户分组删除','DELETE:/userGroups/{groupId}','d6fa825e98fa64d6','2021-11-18 07:45:57','2021-11-18 07:53:28'),(21,0,15,'角色详情','GET:/userRoles/{roleId}','cb000dab5184cc03','2021-11-18 07:45:57','2021-11-18 07:53:28'),(22,0,15,'编辑角色','PUT:/userRoles/{roleId}','7383705308ebb03d','2021-11-18 07:45:57','2021-11-18 07:53:28'),(23,0,15,'删除角色','DELETE:/userRoles/{roleId}','611a19b17851a734','2021-11-18 07:45:57','2021-11-18 07:53:28');
 /*!40000 ALTER TABLE `acl_route` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -64,7 +65,7 @@ CREATE TABLE `menu` (
   `createdAt` timestamp NULL DEFAULT NULL,
   `updatedAt` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -73,6 +74,7 @@ CREATE TABLE `menu` (
 
 LOCK TABLES `menu` WRITE;
 /*!40000 ALTER TABLE `menu` DISABLE KEYS */;
+INSERT INTO `menu` VALUES (14,0,500,1,'账户管理',NULL,NULL,NULL,'2021-08-15 04:54:20','2021-08-15 04:54:20'),(15,0,100,1,'角色管理',14,NULL,'/accountM/role','2021-08-15 04:54:20','2021-08-15 04:54:20'),(16,0,200,1,'人员管理',14,NULL,'/accountM/user','2021-08-15 04:54:20','2021-08-15 04:54:20'),(17,0,300,1,'分组管理',14,NULL,'/accountM/group','2021-08-15 04:54:20','2021-08-15 04:54:20');
 /*!40000 ALTER TABLE `menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -164,7 +166,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,1,0,1,9,'admin','超级管理员','18547852365','admin',1,NULL,NULL,0,'2021-11-18 05:14:07','2021-11-18 05:14:07'),(2,1,0,1,12,'admin','超级管理员','18547852365','admin',2,NULL,NULL,0,'2021-11-18 05:18:16','2021-11-18 05:18:16'),(3,1,0,1,14,'admin','超级管理员','18547852365','admin',3,NULL,NULL,0,'2021-11-18 05:21:02','2021-11-18 07:10:45'),(4,1,0,1,15,'admin','超级管理员','','admin',4,NULL,'2021-11-18 07:29:31',14,'2021-11-18 07:18:25','2021-11-18 07:29:31');
+INSERT INTO `user` VALUES (1,1,0,1,9,'admin','超级管理员','18547852365','admin',1,NULL,NULL,0,'2021-11-18 05:14:07','2021-11-18 05:14:07'),(2,1,0,1,12,'admin','超级管理员','18547852365','admin',2,NULL,NULL,0,'2021-11-18 05:18:16','2021-11-18 05:18:16'),(3,1,0,1,14,'admin','超级管理员','18547852365','admin',3,NULL,NULL,0,'2021-11-18 05:21:02','2021-11-18 07:10:45'),(4,1,0,1,15,'admin','超级管理员','','admin',4,NULL,'2021-11-18 07:36:53',15,'2021-11-18 07:18:25','2021-11-18 07:36:53');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -266,7 +268,7 @@ CREATE TABLE `user_role` (
   `createdAt` timestamp NULL DEFAULT NULL,
   `updatedAt` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -275,7 +277,7 @@ CREATE TABLE `user_role` (
 
 LOCK TABLES `user_role` WRITE;
 /*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
-INSERT INTO `user_role` VALUES (1,0,9,'FULL','超级管理组',1,'','2021-11-18 05:14:07','2021-11-18 05:14:07'),(2,0,12,'FULL','超级管理组',1,'','2021-11-18 05:18:16','2021-11-18 05:18:16'),(3,0,14,'FULL','超级管理组',1,'','2021-11-18 05:21:02','2021-11-18 05:21:02'),(4,0,15,'FULL','超级管理组',1,'','2021-11-18 07:18:25','2021-11-18 07:18:25');
+INSERT INTO `user_role` VALUES (1,0,9,'FULL','超级管理组',1,'','2021-11-18 05:14:07','2021-11-18 05:14:07'),(2,0,12,'FULL','超级管理组',1,'','2021-11-18 05:18:16','2021-11-18 05:18:16'),(3,0,14,'FULL','超级管理组',1,'','2021-11-18 05:21:02','2021-11-18 05:21:02'),(4,0,15,'FULL','超级管理组',1,'','2021-11-18 07:18:25','2021-11-18 07:18:25'),(5,0,15,'FULL','阅读者2',0,'','2021-11-18 07:53:55','2021-11-18 07:53:55');
 /*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -296,7 +298,7 @@ CREATE TABLE `user_role_route` (
   `updatedAt` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `userRoleId` (`userRoleId`,`key`,`tenantId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -305,6 +307,7 @@ CREATE TABLE `user_role_route` (
 
 LOCK TABLES `user_role_route` WRITE;
 /*!40000 ALTER TABLE `user_role_route` DISABLE KEYS */;
+INSERT INTO `user_role_route` VALUES (1,15,5,'PUT:/userStatus','53976db786a21502','2021-11-18 07:53:55','2021-11-18 07:53:55'),(2,15,5,'GET:/users','579e469e8ac850de','2021-11-18 07:53:55','2021-11-18 07:53:55'),(3,15,5,'GET:/userOptions','04ebae36e0be27c9','2021-11-18 07:53:55','2021-11-18 07:53:55'),(4,15,5,'POST:/users','a71cb59835c613f3','2021-11-18 07:53:55','2021-11-18 07:53:55'),(5,15,5,'POST:/userGroups','0b56c2afb73f8e8a','2021-11-18 07:53:55','2021-11-18 07:53:55'),(6,15,5,'GET:/userGroups','468764ba28e2122b','2021-11-18 07:53:55','2021-11-18 07:53:55'),(7,15,5,'GET:/groupOptions','2b42ab90c0a53071','2021-11-18 07:53:55','2021-11-18 07:53:55'),(8,15,5,'GET:/userRoles','bfe0d93815eb324a','2021-11-18 07:53:55','2021-11-18 07:53:55'),(9,15,5,'GET:/userRoleOptions','56cc05c94b7e9c0d','2021-11-18 07:53:55','2021-11-18 07:53:55'),(10,15,5,'POST:/userRoles','17667fd304a571b8','2021-11-18 07:53:55','2021-11-18 07:53:55'),(11,15,5,'PUT:/users/{userId}','55dc1a28dc645b45','2021-11-18 07:53:55','2021-11-18 07:53:55'),(12,15,5,'DELETE:/users/{userId}','66047762b72db5e4','2021-11-18 07:53:55','2021-11-18 07:53:55'),(13,15,5,'GET:/users/{userId}','53012413d1d95634','2021-11-18 07:53:55','2021-11-18 07:53:55'),(14,15,5,'PUT:/userGroups/{groupId}','d458a64979d1b684','2021-11-18 07:53:55','2021-11-18 07:53:55'),(15,15,5,'DELETE:/userGroups/{groupId}','d6fa825e98fa64d6','2021-11-18 07:53:55','2021-11-18 07:53:55'),(16,15,5,'GET:/userRoles/{roleId}','cb000dab5184cc03','2021-11-18 07:53:55','2021-11-18 07:53:55'),(17,15,5,'PUT:/userRoles/{roleId}','7383705308ebb03d','2021-11-18 07:53:55','2021-11-18 07:53:55'),(18,15,5,'DELETE:/userRoles/{roleId}','611a19b17851a734','2021-11-18 07:53:55','2021-11-18 07:53:55');
 /*!40000 ALTER TABLE `user_role_route` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -317,4 +320,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-11-18 15:32:14
+-- Dump completed on 2021-11-18 15:56:33

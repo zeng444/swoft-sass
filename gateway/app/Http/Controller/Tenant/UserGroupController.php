@@ -77,8 +77,6 @@ class UserGroupController
      *
      * @RequestMapping(route="", method={RequestMethod::GET}, name="用户分组列表")
      * @RequestMapping(route="/groupOptions", method={RequestMethod::GET}, name="用户分组选项")
-     * @RequestMapping(route="/customerAnalysis/groupOptions", method={RequestMethod::GET}, name="资源统计分组选项")
-     * @RequestMapping(route="/customerAllocate/groupOptions", method={RequestMethod::GET}, name="资源分配分组选项")
      * @param Request $request
      * @return array
      */
@@ -87,14 +85,8 @@ class UserGroupController
         $name = $request->input('name', '');
         $page = (int)$request->input('page', 1);
         $pageSize = (int)$request->input('pageSize', 20);
-        if (in_array($request->getUriPath(), ['/customerAnalysis/groupOptions', '/customerAllocate/groupOptions'])) {
-            $withCustomerCount = (int)$request->input('withCustomerCount', 0);
-            $withCustomerCount = $withCustomerCount == 1;
-            $columns = ['id', 'name', 'users'];
-        } else {
-            $withCustomerCount = false;
-            $columns = ['id', 'name', 'users', 'createdAt', 'updatedAt'];
-        }
+        $withCustomerCount = false;
+        $columns = ['id', 'name', 'users', 'createdAt', 'updatedAt'];
         return $this->apiResponse->success(
             $this->userGroupLogic->list(['name' => $name], $columns, $page, $pageSize, $withCustomerCount)
         );

@@ -70,9 +70,6 @@ class UserController
      *
      * @RequestMapping(route="", method={RequestMethod::GET}, name="用户列表")
      * @RequestMapping(route="/userOptions", method={RequestMethod::GET}, name="用户选择器")
-     * @RequestMapping(route="/customerAllocate/UserOptions", method={RequestMethod::GET}, name="资源分配用户选择器")
-     * @RequestMapping(route="/customerDelete/userOptions", method={RequestMethod::GET}, name="资源删除用户选择器")
-     * @RequestMapping(route="/customerAnalysis/userOptions", method={RequestMethod::GET}, name="资源统计用户选择器")
      * @param Request $request
      * @return array
      * @throws Throwable
@@ -88,20 +85,8 @@ class UserController
         ];
         $page = (int)$request->input('page', 1);
         $pageSize = (int)$request->input('pageSize', 20);
-        if (in_array($request->getUriPath(), [
-            '/userOptions',
-            '/customerAnalysis/userOptions',
-            '/customerAllocate/UserOptions',
-            '/customerDelete/userOptions',
-        ])) {
-            $withCustomerCount = (int)$request->input('withCustomerCount', 0);
-            $result = $this->userLogic->list($filter, ['id', 'account', 'nickname', 'mobile'], $page, $pageSize, false,$withCustomerCount==1);
-        } else {
-            if (!currentIsSuper()) {
-                $filter['id'] = currentUserId();
-            }
-            $result = $this->userLogic->list($filter, ['id', 'isAvailable', 'isSuper', 'account', 'nickname', 'mobile', 'roleId', 'groupId', 'createdAt'], $page, $pageSize,true,true);
-        }
+        $withCustomerCount = (int)$request->input('withCustomerCount', 0);
+        $result = $this->userLogic->list($filter, ['id', 'account', 'nickname', 'mobile'], $page, $pageSize, false,$withCustomerCount==1);
         return $this->apiResponse->success($result);
     }
 
