@@ -1,0 +1,25 @@
+{
+    "name": "janfish/phalcon-seed",
+    "description": "The Phalcon Framework.",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Robert",
+            "email": "robert@janfish.cn"
+        }
+    ],
+    "keywords": [
+        "Phalcon"
+    ],
+    "require": {
+        "ext-openssl": "*",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-pdo": "*",
+        "ext-bcmath": "*",
+        "ext-phalcon": ">=3.4.1",
+        "predis/predis": "^1.1",
+        "php": ">=7.1.0"
+    }
+}

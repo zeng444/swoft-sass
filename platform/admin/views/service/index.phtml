@@ -1,0 +1,260 @@
+<Row class-name="layout-breadcrumb">
+    <Breadcrumb>
+        <Breadcrumb-item href="#">服务列表</Breadcrumb-item>
+        <Breadcrumb-item>服务列表</Breadcrumb-item>
+    </Breadcrumb>
+</Row>
+
+<Row class-name="layout-filter">
+
+    <i-form inline="true">
+        <Form-item>数据筛选</Form-item>
+
+        <Form-item>
+            <i-select placeholder="状态" v-model="searchFilter.isAvailable">
+                <i-option value="1">是</i-option>
+                <i-option value="0">否</i-option>
+            </i-select>
+        </Form-item>
+
+        <Form-item>
+            <i-ajax-select model="\Application\Core\Models\Server" attribute="name" v-model="searchFilter.serverId" placeholder="服务器" :clearable="true"></i-ajax-select>
+        </Form-item>
+        <Form-item>
+            <i-input placeholder="服务名称" v-model="searchFilter.name"></i-input>
+        </Form-item>
+        <Form-item>
+            <i-input placeholder="服务代号" v-model="searchFilter.code"></i-input>
+        </Form-item>
+        <Form-item>
+            <i-input placeholder="服务tag，逗号隔开" v-model="searchFilter.tag"></i-input>
+        </Form-item>
+        <Form-item>
+            <i-input placeholder="服务地址" v-model="searchFilter.host"></i-input>
+        </Form-item>
+        <Form-item>
+            <Date-picker type="daterange" placeholder="查询创建时间" format="yyyy-MM-dd"
+                         @on-change="searchFilter.createdAt_range=$event"
+                         v-model="searchFilter.createdAt_range"></Date-picker>
+        </Form-item>
+
+        <Form-item>
+            <i-button type="primary" @click="loadList(1, pageSize)">搜索</i-button>
+            <i-button @click="resetFilter">重置</i-button>
+        </Form-item>
+
+    </i-form>
+
+</Row>
+
+
+<Row class-name="layout-content">
+    <i-col class-name="layout-data-list">
+
+        <Row class-name="layout-content-title">
+            <i-col span="12">
+                <h3>服务列表</h3>
+            </i-col>
+            <i-col span="12" class-name="align-right">
+                <Button-group>
+
+                    <i-button @click="removeBatch" type="ghost" icon="trash-b">批量删除</i-button>
+                    <i-button icon="android-create" type="ghost" v-on:click="openPostModal('')">创建内容</i-button>
+
+                </Button-group>
+
+            </i-col>
+        </Row>
+
+        <i-table :columns="columns" :data="data" @on-selection-change="selectionChange" :border="true"
+                 @on-sort-change="remoteSort" stripe></i-table>
+
+
+        <Row class="layout-content-page">
+
+            <i-col span="10">
+                <Button-group></Button-group>
+            </i-col>
+
+            <i-col span="14">
+                <Row type="flex" justify="end">
+                    <Page v-on:on-change="pageChange" size="small" v-on:on-page-size-change="sizeChange" :total="count"
+                          :page-size="pageSize" :current="page" show-elevator show-total></Page>
+                </Row>
+            </i-col>
+
+        </Row>
+
+    </i-col>
+</Row>
+
+
+<template>
+    <Modal :mask-closable="false" width="50%" ref="postPanel" v-model="showPost" title="创建内容" @on-ok="handleSubmit('form2')"
+           @on-cancel="handleReset('form2')">
+        <i-form ref="form2" :model="formData" :rules="validation" label-width="140">
+            <Form-item label="状态" prop="isAvailable">
+                <i-switch :value="formData.isAvailable==1"
+                          @on-change="function(status){ formData.isAvailable=status?1:0}"></i-switch>
+            </Form-item>
+
+            <Form-item label="服务器" prop="serverId">
+                <i-ajax-select model="\Application\Core\Models\Server" attribute="name" v-model.number="formData.serverId"
+                               placeholder="服务器"></i-ajax-select>
+            </Form-item>
+
+            <Form-item label="服务名称" prop="name">
+                <i-input v-model="formData.name" placeholder="请输入"></i-input>
+            </Form-item>
+
+            <Form-item label="服务代号" prop="code">
+                <i-input v-model="formData.code" placeholder="请输入"></i-input>
+            </Form-item>
+
+            <Form-item label="服务tag，逗号隔开" prop="tag">
+                <i-input v-model="formData.tag" placeholder="请输入"></i-input>
+            </Form-item>
+
+            <Form-item label="服务地址" prop="host">
+                <i-input v-model="formData.host" placeholder="请输入"></i-input>
+            </Form-item>
+
+        </i-form>
+        <div slot="footer">
+            <i-button type="ghost" @click="handleReset('form2')" style="margin-left: 8px">取消</i-button>
+            <i-button type="primary" @click="handleSubmit('form2')">提交</i-button>
+        </div>
+    </Modal>
+</template>
+
+
+<script>
+    (function () {
+        "use strict";
+        var service = new Janfish_DataList({
+            el: "#app",
+            data: {
+
+                validation: {
+                    "serverId": [{
+                        "required": true,
+                        "type": "integer",
+                        "message": "请填写的整形数字",
+                        "trigger": "blur"
+                    }],
+                    "name": [{"type": "string", "max": 50, "message": "服务名称长度应该在1-50", "trigger": "blur"}],
+                    "code": [{"type": "string", "max": 50, "message": "服务代号长度应该在1-50", "trigger": "blur"}],
+                    "tag": [{"type": "string", "max": 255, "message": "服务tag，逗号隔开长度应该在1-255", "trigger": "blur"}],
+                    "host": [{"type": "string", "max": 200, "message": "服务地址长度应该在1-200", "trigger": "blur"}]
+                },
+
+                api: {
+                    search: '/service',
+
+                    post: '/service/post',
+                    remove: '/service/delete'
+
+                },
+                page: 1,
+                pageSize: 12,
+                searchFilter: {
+                    "id": "",
+                    "isAvailable": "",
+                    "serverId": "",
+                    "name": "",
+                    "code": "",
+                    "tag": "",
+                    "host": "",
+                    "createdAt_range": ""
+                },
+                columns: [
+
+                    {
+                        type: 'selection',
+                        width: 60,
+                        align: 'center',
+                        fixed: 'left'
+                    },
+
+                    {"sortable": "custom", "title": "Id", "key": "id", "width": 80},
+                    {
+                        "sortable": "custom",
+                        "title": "状态",
+                        "key": "isAvailable",
+                        "width": 110,
+                        "render": function (h, params) {
+                            return h('i-switch', {
+                                props: {
+                                    value: params.row.isAvailable == '1'
+                                },
+                                on: {
+                                    'on-change': function (val) {
+                                        params.row.isAvailable = val === true ? '1' : '0';
+                                        service.modifyRemoteData(params.row);
+                                    }
+                                }
+                            })
+                        }
+                    },
+                    {"sortable": "custom", "title": "服务器", "key": "serverId",render:function (h,params){
+                            return params.row.serverName + "("+params.row.serverId+")";
+                        }},
+                    {"sortable": "custom", "title": "服务名称", "key": "name"},
+                    {"sortable": "custom", "title": "服务代号", "key": "code"},
+                    {"sortable": "custom", "title": "服务tag", "key": "tag",width: 140},
+                    {"sortable": "custom", "title": "服务地址", "key": "host",width: 210},
+                    {"title":"数据库数","key":"dbCount",render:function (h,params){
+                            return params.row.dbCount
+                        }},
+                    {"sortable": "custom", "title": "创建时间", "key": "createdAt", "width": 160},
+                    {"sortable": "custom", "title": "更新时间", "key": "updatedAt", "width": 160},
+
+
+                    {
+                        title: '操作',
+                        width: 130,
+                        align: 'center',
+                        key: 'operation',
+                        fixed: 'right',
+                        render: function (h, params) {
+                            return h('Row', [
+                                h('Button', {
+                                    props: {
+                                        type: 'ghost',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '10px'
+                                    },
+                                    on: {
+                                        click: function () {
+                                            service.openPostModal(params.row.id)
+                                        }
+                                    }
+                                }, '编辑'),
+                                h('Button', {
+                                    props: {
+                                        type: 'ghost',
+                                        size: 'small'
+                                    },
+                                    style: {},
+                                    on: {
+                                        click: function () {
+                                            service.remove(params.row.id);
+                                        }
+                                    }
+                                }, '删除')
+                            ])
+                        }
+                    }
+
+                ]
+            },
+            mounted: function () {
+                this.setActiveMenu(["33", "34"]);
+            }
+        });
+
+    }());
+
+</script>

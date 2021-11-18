@@ -1,0 +1,9 @@
+#!/bin/bash
+database=$1
+if [ ! $database ]; then
+   echo "no database name";
+   exit
+fi
+echo "start clone....."
+mysql -e  "CREATE DATABASE $1 /*!40100 DEFAULT CHARACTER SET utf8mb4 */"
+mysql $1 < $(pwd)/.db/lightning_source.sql

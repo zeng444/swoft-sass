@@ -1,0 +1,42 @@
+<?php declare(strict_types=1);
+{include file="file-header.stub"}
+namespace {= namespace};
+
+use Swoft\Http\Message\Request;
+use Swoft\Http\Server\Annotation\Mapping\Controller;
+use Swoft\Http\Server\Annotation\Mapping\RequestMethod;
+use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
+use Swoft\Http\Server\Annotation\Mapping\Middlewares;
+use Swoft\Http\Server\Annotation\Mapping\Middleware;
+use App\Http\Middleware\AgentIdMiddleware;
+use App\Http\Middleware\Pc\JwtBeforeMiddleware;
+use App\Model\Logic\ResponseLogic;
+
+/**
+ * Class {= className}
+ * @Controller(prefix="pc{= prefix}")
+ * @Middlewares({
+ *     @Middleware(AgentIdMiddleware::class),
+ *     @Middleware(JwtBeforeMiddleware::class)
+ *     })
+ * @package {= namespace}
+ */
+class {= className}
+{
+
+    /**
+     * Get data list. access uri path: {= prefix}
+     * @RequestMapping(route="")
+     * @param Request $request
+     * @return array
+     */
+    public function index(Request $request): array
+    {
+        try{
+          return ResponseLogic::success([]);
+        }catch(\Exception $e){
+            return ResponseLogic::error($e->getMessage());
+        }
+    }
+
+}

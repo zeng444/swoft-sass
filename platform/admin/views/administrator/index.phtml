@@ -1,0 +1,238 @@
+<Row class-name="layout-breadcrumb">
+    <Breadcrumb>
+        <Breadcrumb-item href="#">系统管理</Breadcrumb-item>
+        <Breadcrumb-item>管理员管理</Breadcrumb-item>
+    </Breadcrumb>
+</Row>
+
+<Row class-name="layout-filter">
+
+    <i-form inline="true">
+
+        <Form-item>数据筛选</Form-item>
+
+        <Form-item>
+            <i-input placeholder="账户" v-model="searchFilter.name"></i-input>
+        </Form-item>
+
+        <Form-item>
+            <i-ajax-select model="\Application\Core\Models\AdministratorRole" attribute="name" v-model="searchFilter.role_id" :remote-filterable="true" placeholder="角色" :clearable="true"></i-ajax-select>
+        </Form-item>
+
+        <Form-item>
+            <i-input placeholder="昵称" v-model="searchFilter.nickname"></i-input>
+        </Form-item>
+
+        <Form-item>
+            <i-select placeholder="是否禁用" v-model="searchFilter.is_block">
+                <i-option value="1">是</i-option>
+                <i-option value="0">否</i-option>
+            </i-select>
+        </Form-item>
+
+        <Form-item>
+            <i-button type="primary" @click="loadList(1, pageSize)">搜索</i-button>
+            <i-button @click="resetFilter">重置</i-button>
+        </Form-item>
+
+    </i-form>
+
+</Row>
+
+
+<Row class-name="layout-content">
+    <i-col class-name="layout-data-list">
+
+
+        <Row class-name="layout-content-title">
+
+            <i-col span="12">
+                <h3>管理员管理</h3>
+            </i-col>
+
+            <i-col span="12" class-name="align-right">
+                <Button-group>
+                    <i-button @click="removeBatch" type="ghost" icon="trash-b">批量删除</i-button>
+                    <i-button icon="android-create" type="ghost" v-on:click="location.href='/administrator/post'">添加管理员</i-button>
+                </Button-group>
+            </i-col>
+
+        </Row>
+
+        <i-table :columns="columns" :data="data" @on-selection-change="selectionChange" :border="true" @on-sort-change="remoteSort" stripe></i-table>
+
+
+        <Row class="layout-content-page">
+
+            <i-col span="10">
+                <Button-group></Button-group>
+            </i-col>
+
+            <i-col span="14">
+                <Row type="flex" justify="end">
+                    <Page v-on:on-change="pageChange" size="small" v-on:on-page-size-change="sizeChange" :total="count" :page-size="pageSize" :current="page" show-elevator show-total></Page>
+                </Row>
+            </i-col>
+
+        </Row>
+
+    </i-col>
+</Row>
+<script>
+    (function () {
+        "use strict";
+        var administrator = new Janfish_DataList({
+            el: "#app",
+            data: {
+                api: {
+                    search: '/administrator',
+                    post: '/administrator/post',
+                    remove: '/administrator/delete'
+                },
+                page: 1,
+                pageSize: 12,
+                searchFilter: {
+                    nickname: '',
+                    name: '',
+                    is_block: ''
+                },
+                columns: [
+                    {
+                        type: 'selection',
+                        width: 60,
+                        align: 'center'
+                    },
+                    {
+                        sortable: 'custom',
+                        title: 'Id',
+                        width: 80,
+                        key: 'id'
+                    },
+                    {
+                        title: '角色',
+                        key: 'role_name'
+                    },
+                    {
+                        sortable: 'custom',
+                        title: '账户',
+                        key: 'name'
+                    },
+                    {
+                        sortable: 'custom',
+                        title: '昵称',
+                        key: 'nickname'
+                    },
+                    {
+                        sortable: 'custom',
+                        title: '微信绑定',
+                        key: 'is_wechat_openid',
+                        render:function (h, params) {
+                            var isBind = params.row.is_wechat_openid=='1',ele = [
+                                h('span',isBind ? '是 ':'否 ')
+                            ];
+                            if(isBind){
+                                ele.push(h('a',{
+                                    on:{
+                                        click:function () {
+                                            administrator.$Modal.confirm({
+                                                title: '提示信息',
+                                                content: '您确定要解绑 <strong>' + params.row.name + '</strong> 的微信登录吗',
+                                                onOk: function () {
+                                                    administrator.$http.post('/administrator/bind', qs.stringify({id: params.row.id})).then(function (response) {
+                                                        if (response.code !== "200") {
+                                                            administrator.$Message.error(response.message);
+                                                            return false;
+                                                        }
+                                                        administrator.$Message.success("操作成功");
+                                                        params.row.is_wechat_openid='0';
+                                                    });
+                                                },
+                                                onCancel: function () {
+                                                    return false;
+                                                }
+                                            });
+                                        }
+                                    }
+                                }, '[解绑]' ));
+                            }
+                            return h('div',{},ele);
+                        }
+                    },
+                    {
+                        sortable: 'custom',
+                        title: '是否禁用',
+                        width: 150,
+                        key: 'is_block',
+                        render: function (h, params) {
+                            return h('i-switch', {
+                                props: {
+                                    value: params.row.is_block == '1'
+                                },
+                                on: {
+                                    'on-change': function (val) {
+                                        params.row.is_block = val === true ? '1' : '0';
+                                        administrator.modifyRemoteData(params.row);
+                                    }
+                                }
+                            })
+                        }
+                    },
+                    {
+                        sortable: 'custom',
+                        title: '创建',
+                        width: 160,
+                        key: 'createdAt'
+                    },
+                    {
+                        sortable: 'custom',
+                        title: '更新',
+                        width: 160,
+                        key: 'updatedAt'
+                    },
+                    {
+                        title: '操作',
+                        width: 130,
+                        align: 'center',
+                        key: 'operation',
+                        render: function (h, params) {
+                            return h('Row', [
+                                h('Button', {
+                                    props: {
+                                        type: 'ghost',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '10px'
+                                    },
+                                    on: {
+                                        click: function () {
+                                            location.href = '/administrator/post?id=' + (params.row.id);
+                                        }
+                                    }
+                                }, '编辑'),
+                                h('Button', {
+                                    props: {
+                                        type: 'ghost',
+//                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    style: {},
+                                    on: {
+                                        click: function () {
+                                            administrator.remove(params.row.id);
+                                        }
+                                    }
+                                }, '删除')
+                            ])
+                        }
+                    }
+                ]
+            },
+            mounted: function () {
+                this.setActiveMenu(['2', '27']);
+            }
+        });
+
+    }());
+
+</script>

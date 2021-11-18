@@ -1,0 +1,18 @@
+version: '3.2'
+
+services:
+  elasticsearch2:
+    image: elasticsearch:5.2.1-alpine
+    container_name: elasticsearch2
+    volumes:
+      - /var/lib/elasticsearch2:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9201:9200"
+
+networks:
+  default:
+    external:
+      name: janfish

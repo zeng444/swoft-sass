@@ -1,0 +1,497 @@
+<Row class-name="layout-breadcrumb">
+    <Breadcrumb>
+        <Breadcrumb-item href="#">租客服务</Breadcrumb-item>
+        <Breadcrumb-item>租客列表</Breadcrumb-item>
+    </Breadcrumb>
+</Row>
+
+<Row class-name="layout-filter">
+
+    <i-form inline="true">
+        <Form-item>数据筛选</Form-item>
+        <Form-item style="width: 120px;">
+            <i-input placeholder="Id" v-model="searchFilter.id"></i-input>
+        </Form-item>
+        <Form-item>
+            <i-select placeholder="是否可用" v-model="searchFilter.isAvailable">
+                <i-option value="1">是</i-option>
+                <i-option value="0">否</i-option>
+            </i-select>
+        </Form-item>
+        <Form-item style="width: 120px;">
+            <i-input placeholder="公司名称" v-model="searchFilter.name"></i-input>
+        </Form-item>
+
+        <Form-item style="width: 120px;">
+            <i-input placeholder="初始账号" v-model="searchFilter.account"></i-input>
+        </Form-item>
+        <Form-item>
+            <i-input placeholder="城市" v-model="searchFilter.city"></i-input>
+        </Form-item>
+        <Form-item style="width: 120px;">
+            <i-input placeholder="联系人" v-model="searchFilter.linkman"></i-input>
+        </Form-item>
+        <Form-item style="width: 120px;">
+            <i-input placeholder="联系电话" v-model="searchFilter.contact"></i-input>
+        </Form-item>
+        <Form-item>
+            <Date-picker type="daterange" placeholder="查询有效期开始" format="yyyy-MM-dd"
+                         @on-change="searchFilter.beginAt_range=$event"
+                         v-model="searchFilter.beginAt_range"></Date-picker>
+        </Form-item>
+        <Form-item>
+            <Date-picker type="daterange" placeholder="查询有效期结束" format="yyyy-MM-dd"
+                         @on-change="searchFilter.endAt_range=$event" v-model="searchFilter.endAt_range"></Date-picker>
+        </Form-item>
+
+        <Form-item>
+            <i-button type="primary" @click="loadList(1, pageSize)">搜索</i-button>
+            <i-button @click="resetFilter">重置</i-button>
+        </Form-item>
+
+    </i-form>
+
+</Row>
+
+
+<Row class-name="layout-content">
+    <i-col class-name="layout-data-list">
+
+        <Row class-name="layout-content-title">
+            <i-col span="12">
+                <h3>租客列表</h3>
+            </i-col>
+            <i-col span="12" class-name="align-right">
+                <Button-group>
+
+                
+                    <i-button icon="android-create" type="ghost" v-on:click="openPostModal('')">创建租客</i-button>
+
+                </Button-group>
+
+            </i-col>
+        </Row>
+
+        <i-table :columns="columns" :data="data" @on-selection-change="selectionChange" :border="true"
+                 @on-sort-change="remoteSort" stripe></i-table>
+
+
+        <Row class="layout-content-page">
+
+            <i-col span="10">
+                <Button-group></Button-group>
+            </i-col>
+
+            <i-col span="14">
+                <Row type="flex" justify="end">
+                    <Page v-on:on-change="pageChange" size="small" v-on:on-page-size-change="sizeChange" :total="count"
+                          :page-size="pageSize" :current="page" show-elevator show-total></Page>
+                </Row>
+            </i-col>
+
+        </Row>
+
+    </i-col>
+</Row>
+
+
+<template>
+    <Modal :mask-closable="false" width="58%" ref="postPanel" v-model="showPost" title="编辑租客"
+           @on-ok="handleSubmit('form2')"
+           @on-cancel="handleReset('form2')">
+        <i-form ref="form2" :model="formData" :rules="validation" label-width="90">
+
+            <Row>
+                <i-col span="24" style="margin: 0px 20px 20px 10px;font-weight:bold">
+                    基础信息
+                </i-col>
+            </Row>
+
+            <Row>
+                <i-col span="12">
+                    <Form-item label="公司名称" prop="name">
+                        <i-input v-model="formData.name" placeholder="用于登录的公司名称"></i-input>
+                    </Form-item>
+                </i-col>
+                <i-col span="12">
+                    <Form-item label="是否可用" prop="isAvailable">
+                        <i-switch :value="formData.isAvailable==1"
+                                  @on-change="function(status){ formData.isAvailable=status ? 1 : 0}"></i-switch>
+                    </Form-item>
+                </i-col>
+            </Row>
+
+
+            <Row>
+                <i-col span="12">
+                    <Form-item label="初始账号" prop="account" v-if="!formData.id">
+                        <i-input v-model="formData.account" placeholder="用于登录的账户"></i-input>
+                    </Form-item>
+                    <Form-item label="初始账号" v-else>
+                        {{formData.account}}
+                    </Form-item>
+                </i-col>
+
+                <i-col span="12">
+                    <Form-item label="初始密码" prop="password" v-if="!formData.id">
+                        <i-input v-model="formData.password" placeholder="用于登录的密码"></i-input>
+                    </Form-item>
+                    <Form-item label="初始密码" v-else>
+                        不可见
+                    </Form-item>
+                </i-col>
+            </Row>
+
+
+
+
+            <Row>
+                <i-col span="12">
+                    <Form-item label="省份" prop="province">
+                        <i-input v-model="formData.province" placeholder="请输入"></i-input>
+                    </Form-item>
+
+                </i-col>
+                <i-col span="12">
+                    <Form-item label="城市" prop="city">
+                        <i-input v-model="formData.city" placeholder="请输入"></i-input>
+                    </Form-item>
+                </i-col>
+            </Row>
+
+            <Row>
+                <i-col span="12">
+                    <Form-item label="联系人" prop="linkman">
+                        <i-input v-model="formData.linkman" placeholder="请输入"></i-input>
+                    </Form-item>
+                </i-col>
+                <i-col span="12">
+                    <Form-item label="联系电话" prop="contact">
+                        <i-input v-model="formData.contact" placeholder="请输入"></i-input>
+                    </Form-item>
+                </i-col>
+            </Row>
+
+            <Row>
+                <i-col span="12">
+                    <Form-item label="客服经理" prop="managerName">
+                        <i-input v-model="formData.managerName" placeholder="请输入"></i-input>
+                    </Form-item>
+                </i-col>
+                <i-col span="12">
+                    <Form-item label="客服电话" prop="managerMobile">
+                        <i-input v-model="formData.managerMobile" placeholder="请输入"></i-input>
+                    </Form-item>
+                </i-col>
+            </Row>
+
+
+
+            <Row>
+                <i-col span="24" style="margin: 0px 20px 20px 10px;font-weight:bold">
+                    授权信息
+                </i-col>
+            </Row>
+
+            <Row>
+                <i-col span="12">
+                    <Form-item label="有效期开始" prop="beginAt">
+                        <Row>
+                            <i-col span="11">
+                                <Date-picker type="datetime" placeholder="有效期开始"
+                                             @on-change="formData.beginAt=$event"
+                                             v-model="formData.beginAt"></Date-picker>
+                            </i-col>
+                        </Row>
+                    </Form-item>
+                </i-col>
+                <i-col span="12">
+                    <Form-item label="有效期结束" prop="endAt">
+                        <Row>
+                            <i-col span="11">
+                                <Date-picker type="datetime" placeholder="有效期结束"
+                                             @on-change="formData.endAt=$event" v-model="formData.endAt"></Date-picker>
+                            </i-col>
+                        </Row>
+                    </Form-item>
+                </i-col>
+            </Row>
+
+
+
+            <Row>
+                <i-col span="12">
+                    <Form-item label="服务数据库" prop="database" v-if="!formData.id">
+                        <Row>
+                            <i-col span="11">
+                                <i-ajax-select url="/resource/database" attribute="name" v-model="formData.database"
+                                               placeholder="服务数据库" :clearable="true"></i-ajax-select>
+                            </i-col>
+                        </Row>
+                    </Form-item>
+                    <Form-item label="服务数据库" v-else="!formData.id">
+                        <Row>
+                            <i-col span="11">
+                                {{formData.databaseName}}
+                            </i-col>
+
+                        </Row>
+                    </Form-item>
+                </i-col>
+                <i-col span="12">
+                    <Form-item label="座席数" prop="allowedUsers">
+                        <i-input v-model.number="formData.allowedUsers" placeholder="座席数"></i-input>
+                    </Form-item>
+
+                </i-col>
+            </Row>
+
+
+
+        </i-form>
+        <div slot="footer">
+            <i-button type="ghost" @click="handleReset('form2')" style="margin-left: 8px">取消</i-button>
+            <i-button type="primary" @click="handleSubmit('form2')">提交</i-button>
+        </div>
+    </Modal>
+</template>
+
+
+<script>
+    (function () {
+        "use strict";
+        var tenant = new Janfish_DataList({
+            el: "#app",
+            methods: {
+                beforePost: function (data) {
+                    if (typeof data.beginAt === 'object') {
+                        data.beginAt = this.formatDate(data.beginAt)
+                    }
+                    if (typeof data.endAt === 'object') {
+                        data.endAt = this.formatDate(data.endAt)
+                    }
+                    return data;
+                },
+                formatDate: function (date) {
+                    var year = date.getFullYear(), month = (date.getMonth() + 1), day = (date.getDate()),
+                        hour = date.getHours(), min = date.getMinutes(), sec = date.getSeconds();
+                    month = month.toString().length < 2 ? '0' + month : month;
+                    day = day.toString().length < 2 ? '0' + day : day;
+                    hour = hour.toString().length < 2 ? '0' + hour : hour;
+                    min = min.toString().length < 2 ? '0' + min : min;
+                    sec = sec.toString().length < 2 ? '0' + sec : sec;
+                    console.info(year + '-' + (month) + '-' + day + ' ' + hour + ':' + min + ":" + sec);
+                    return year + '-' + (month) + '-' + day + ' ' + hour + ':' + min + ":" + sec;
+                }
+            },
+            data: {
+                showPost: false,
+                validation: {
+                    "name": [{"required": true, "message": "公司名称不能为空", "trigger": "blur"}, {
+                        "type": "string",
+                        "max": 30,
+                        "message": "公司名称长度应该在1-30",
+                        "trigger": "blur"
+                    }],
+                    "account": [{"required": true, "message": "初始账号不能为空", "trigger": "blur"}, {
+                        "type": "string",
+                        "max": 30,
+                        "message": "初始账号长度应该在1-30",
+                        "trigger": "blur"
+                    }],
+                    "password": [{"required": true, "message": "初始密码不能为空", "trigger": "blur"}, {
+                        "type": "string",
+                        "max": 40,
+                        "message": "初始密码长度应该在1-40",
+                        "trigger": "blur"
+                    }],
+                    "allowedUsers":[{"required": true,"type": "integer", "message": "座席数格式错误", "trigger": "blur"}],
+                    "managerName":[{"required": false,"type": "string", "max": 40, "message": "客服经理长度应该在1-40", "trigger": "blur"}],
+                    "managerMobile":[{"required": false,"type": "string","max": 11,  "message": "客服电话长度应该在1-11", "trigger": "blur"}],
+                    "province": [{"type": "string", "max": 30, "message": "省份长度应该在1-30", "trigger": "blur"}],
+                    "city": [{"type": "string", "max": 30, "message": "城市长度应该在1-30", "trigger": "blur"}],
+                    "linkman": [{"type": "string", "max": 50, "message": "联系人长度应该在1-50", "trigger": "blur"}],
+                    "contact": [{"type": "string", "max": 20, "message": "联系电话长度应该在1-20", "trigger": "blur"}],
+                    "database": [{
+                        "required": true,
+                        "type": "string",
+                        "max": 20,
+                        "message": "服务数据库不能未空",
+                        "trigger": "blur"
+                    }],
+                    "beginAt": [
+                        {
+                            "required": true,
+                            "message": "有效期开始时间不能为空",
+                            "trigger": "blur",
+                            "validator": function (rule, value, callback) {
+                                if (!value) {
+                                    callback(new Error())
+                                } else {
+                                    callback()
+                                }
+                            }
+                        }
+                    ],
+                    "endAt": [
+                        {
+                            "required": true,
+                            "message": "有效期结束时间不能为空",
+                            "trigger": "blur",
+                            "validator": function (rule, value, callback) {
+                                if (!value) {
+                                    callback(new Error())
+                                } else {
+                                    callback()
+                                }
+                            }
+                        }
+                    ]
+                },
+                api: {
+                    search: '/tenant',
+                    post: '/tenant/post',
+                    remove: '/tenant/delete'
+                },
+                page: 1,
+                pageSize: 12,
+                searchFilter: {
+                    "id": "",
+                    "isAvailable": "",
+                    "account": "",
+                    "name": "",
+                    "province": "",
+                    "city": "",
+                    "linkman": "",
+                    "contact": "",
+                    "beginAt_range": "",
+                    "endAt_range": "",
+                    "createdAt_range": ""
+                },
+                columns: [
+                    {
+                        type: 'selection',
+                        width: 60,
+                        align: 'center',
+                        fixed: 'left'
+                    },
+                    {"sortable": "custom", "title": "Id", "key": "id", "width": 80},
+                    {
+                        "sortable": "custom",
+                        "title": "是否可用",
+                        "key": "isAvailable",
+                        "width": 110,
+                        "render": function (h, params) {
+                            return h('i-switch', {
+                                props: {
+                                    value: params.row.isAvailable == '1'
+                                },
+                                on: {
+                                    'on-change': function (val) {
+                                        params.row.isAvailable = val === true ? '1' : '0';
+                                        tenant.modifyRemoteData(params.row);
+                                    }
+                                }
+                            })
+                        }
+                    },
+                    {"sortable": "custom", "title": "公司名称", "key": "name",width: 140},
+                    {
+                        "sortable": "custom", "title": "省份",width: 90, "key": "province", render: function (h, params) {
+                            return params.row.province || '-'
+                        }
+                    },
+                    {
+                        "sortable": "custom", "title": "城市",width: 90, "key": "city", render: function (h, params) {
+                            return params.row.city || '-'
+                        }
+                    },
+                    {
+                        "sortable": "custom", "title": "联系人", "key": "linkman", width:100,render: function (h, params) {
+                            return params.row.linkman || '-'
+                        }
+                    },
+                    {
+                        "sortable": "custom", "title": "联系电话",
+                        "key": "contact",
+                        "width": 120,
+                        render: function (h, params) {
+                            return params.row.contact || '-'
+                        }
+                    },
+                    {
+                        "sortable": "custom",
+                        "title": "有效期开始",
+                        "key": "beginAt",
+                        "width": 160,
+                        render: function (h, params) {
+                            return params.row.beginAt || '-'
+                        }
+                    },
+                    {
+                        "sortable": "custom",
+                        "title": "有效期结束",
+                        "key": "endAt",
+                        "width": 160,
+                        render: function (h, params) {
+                            return params.row.endAt || '-'
+                        }
+                    },
+                    {"sortable": "custom", "title": "创建时间", "key": "createdAt", "width": 160},
+                    {"sortable": "custom", "title": "更新时间", "key": "updatedAt", "width": 160},
+                    {
+                        title: '操作',
+                        width: 160,
+                        align: 'center',
+                        key: 'operation',
+                        fixed: 'right',
+                        render: function (h, params) {
+                            return h('ButtonGroup', [
+                                h('Button', {
+                                    props: {
+                                        type: 'ghost',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: function () {
+                                            location.href = "/tenant/view?id=" + params.row.id;
+                                        }
+                                    }
+                                }, ' 详情'),
+                                h('Button', {
+                                    props: {
+                                        type: 'ghost',
+                                        size: 'small'
+                                    },
+
+                                    on: {
+                                        click: function () {
+                                            tenant.openPostModal(params.row.id)
+                                        }
+                                    }
+                                }, '编辑'),
+                                h('Button', {
+                                    props: {
+                                        type: 'ghost',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: function () {
+                                            location.href = "/tenantBalance/index?id=" + params.row.id;
+                                        }
+                                    }
+                                }, '日志'),
+                            ])
+                        }
+                    }
+
+                ]
+            },
+            mounted: function () {
+                this.setActiveMenu(["37", "38"]);
+            }
+        });
+
+    }());
+
+</script>

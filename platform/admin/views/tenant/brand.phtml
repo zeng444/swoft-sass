@@ -1,0 +1,254 @@
+<Row class-name="layout-breadcrumb">
+    <Breadcrumb>
+        <Breadcrumb-item href="#">租客服务</Breadcrumb-item>
+        <Breadcrumb-item href="/tenant/index">租客列表</Breadcrumb-item>
+        <Breadcrumb-item>租客 “{{info}}” 的品牌</Breadcrumb-item>
+    </Breadcrumb>
+</Row>
+
+
+<Row class-name="layout-content">
+    <i-col class-name="layout-data-list">
+
+        <Row class-name="layout-content-title">
+            <i-col span="12">
+                <h3>租客品牌</h3>
+            </i-col>
+            <i-col span="12" class-name="align-right">
+                <Button-group>
+
+
+                    <i-button icon="android-create" type="ghost" v-on:click="openPostModal('')">添加品牌</i-button>
+
+                </Button-group>
+
+            </i-col>
+        </Row>
+
+        <i-table :columns="columns" :data="data" @on-selection-change="selectionChange" :border="true"
+                 @on-sort-change="remoteSort" stripe></i-table>
+
+
+        <Row class="layout-content-page">
+
+            <i-col span="10">
+                <Button-group></Button-group>
+            </i-col>
+
+            <i-col span="14">
+                <Row type="flex" justify="end">
+                    <Page v-on:on-change="pageChange" size="small" v-on:on-page-size-change="sizeChange" :total="count"
+                          :page-size="pageSize" :current="page" show-elevator show-total></Page>
+                </Row>
+            </i-col>
+
+        </Row>
+
+    </i-col>
+</Row>
+
+
+<template>
+    <Modal :mask-closable="false" width="58%" ref="postPanel" v-model="showPost" title="品牌编辑"
+           @on-ok="handleSubmit('form2')"
+           @on-cancel="handleReset('form2')">
+        <i-form ref="form2" :model="formData" :rules="validation" label-width="90">
+
+            <Row>
+                <i-col span="12">
+                    <Form-item label="系统代号" prop="systemCode" v-if="!formData.id">
+
+                        <i-select v-model="formData.systemCode">
+                            <?php foreach ($brands as $brand){?>
+                                <i-option value="<?php echo $brand['systemCode']?>" key="<?php echo $brand['systemCode']?>"><?php echo $brand['name']?></i-option>
+                            <?php  } ?>
+                        </i-select>
+<!--                        <i-input v-model="formData.systemCode" placeholder="请填写系统代号"></i-input>-->
+
+                    </Form-item>
+
+                    <Form-item label="系统代号"v-else>
+                        {{formData.systemCode}}
+                    </Form-item>
+                </i-col>
+            </Row>
+
+            <Row>
+                <i-col span="12">
+                    <Form-item label="代理地址" prop="proxy">
+                        <i-input v-model="formData.proxy" placeholder="请填写代理地址"></i-input>
+                    </Form-item>
+                </i-col>
+            </Row>
+
+            <Row>
+                <i-col span="12">
+                    <Form-item label="代理端口" prop="port">
+                        <i-input v-model="formData.port" placeholder="请填写代理端口"></i-input>
+                    </Form-item>
+                </i-col>
+            </Row>
+
+
+        </i-form>
+        <div slot="footer">
+            <i-button type="ghost" @click="handleReset('form2')" style="margin-left: 8px">取消</i-button>
+            <i-button type="primary" @click="handleSubmit('form2')">提交</i-button>
+        </div>
+    </Modal>
+</template>
+
+
+<script>
+    (function () {
+        "use strict";
+        var tenant = new Janfish_DataList({
+            el: "#app",
+            methods: {
+                handleReset: function (name) {
+                    for (var i in this.formData) {
+                        this.formData[i] = '';
+                    }
+                    if (this.showPost) {
+                        this.showPost = false;
+                    }
+                    this.formLoaded = false;
+                },
+                remoteBehavior: function (api, id,systemCode, msg) {
+                    msg = msg || '您确定要操作Id为 {{id}} 的记录吗';
+                    var _this = this;
+                    if (!_this.api[api]) {
+                        console.info('remoteBehavior 没有定义接口行为');
+                        return false;
+                    }
+                    this.$Modal.confirm({
+                        title: '提示信息',
+                        //content: '您确定要删除Id为 <strong>' + id + '</strong> 的记录吗',
+                        content: msg.replace('{{id}}', '<strong>' + systemCode + '</strong>'),
+                        onOk: function () {
+                            _this.$http.post(_this.api[api], qs.stringify({id: id,systemCode:systemCode})).then(function (response) {
+                                if (response.code !== "200") {
+                                    _this.$Message.error(response.message);
+                                    return false;
+                                }
+                                _this.$Message.success("操作成功");
+                                _this.loadList(_this.page, _this.pageSize);
+                            });
+                        },
+                        onCancel: function () {
+                            return false;
+                        }
+                    });
+                },
+                openPostModal: function (id, systemCode) {
+                    var _this = this, data, connect = _this.api.post.indexOf('?') ? '&' : '?';
+                    _this.$http.get(_this.api.post + connect + 'id=' + id + '&systemCode=' + encodeURI(systemCode || '')).then(function (response) {
+                        if (response.status !== "success") {
+                            _this.$Message.error(response.message);
+                            return false;
+                        }
+                        data = _this.formatLoadedData(response.data.data);
+                        _this.formData = _this.afterLoad(data);
+                        _this.formLoaded = true;
+
+                    });
+                    this.showPost = true;
+
+                },
+                beforePost: function (data) {
+                    data.id = this.purl.param.id
+                    return data;
+                },
+                afterDataLoad:function (data){
+                    this.info =data.info;
+                    return data;
+                },
+                listPostData: function (data) {
+                    data.id = this.purl.param.id
+                    return data;
+                },
+            },
+            data: {
+                info:'',
+                validation: {
+                    "systemCode": [{"required": true, "message": "系统代号不能为空", "trigger": "blur"}, {
+                        "type": "string",
+                        "max": 30,
+                        "message": "公司名称长度应该在1-30",
+                        "trigger": "blur"
+                    }],
+                },
+
+                api: {
+                    search: '/tenant/brand',
+                    post: '/tenant/brandpost',
+                    remove: '/tenant/branddelete'
+                },
+                page: 1,
+                pageSize: 12,
+                searchFilter: {
+                    "id": "",
+                },
+                columns: [
+                    {"title": "品牌", "key": "code"},
+                    {"title": "系统名称", "key": "name"},
+                    {"title": "系统代号", "key": "systemCode"},
+                    {"title": "类型", "key": "type"},
+                    {
+                        "title": "代理", "key": "proxy", render: function (h, params) {
+                            if (!params.row.proxy && !params.row.port) {
+                                return '-'
+                            }
+                            return params.row.proxy + ":" + params.row.port
+                        }
+                    },
+                    {
+                        title: '操作',
+                        width: 130,
+                        align: 'center',
+                        key: 'operation',
+                        fixed: 'right',
+                        render: function (h, params) {
+
+                            return h('Row', [
+                                h('Button', {
+                                    props: {
+                                        type: 'ghost',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '10px'
+                                    },
+                                    on: {
+                                        click: function () {
+                                            tenant.openPostModal(tenant.purl.param.id, params.row.systemCode)
+                                        }
+                                    }
+                                }, '编辑'),
+                                h('Button', {
+                                    props: {
+                                        type: 'ghost',
+                                        size: 'small'
+                                    },
+                                    style: {},
+                                    on: {
+                                        click: function () {
+                                            console.info(params.row);
+                                            tenant.remoteBehavior('remove',tenant.purl.param.id,params.row.systemCode);
+                                        }
+                                    }
+                                }, '删除')
+                            ])
+                        }
+                    }
+
+                ]
+            },
+            mounted: function () {
+                this.setActiveMenu(["37", "38"]);
+            }
+        });
+
+    }());
+
+</script>

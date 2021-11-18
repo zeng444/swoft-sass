@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>简鱼电销售运营管理平台</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcdn.net/ajax/libs/iview/2.10.0/styles/iview.css">
+    <link rel="stylesheet" type="text/css" href="/css/themes.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcdn.net/ajax/libs/jsoneditor/5.9.6/jsoneditor.min.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.5.2/qs.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.4.2/vue.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/iview/2.10.0/iview.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jsoneditor/5.9.6/jsoneditor.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.16.1/axios.min.js"></script>
+    <script src="/vendor/vue-cookie/vue-cookie.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/purl/2.3.1/purl.min.js"></script>
+    <script src="//map.qq.com/api/js?v=2.exp"></script>
+    <script src="/vendor/ueditor/ueditor.config.js"></script>
+    <script src="/vendor/ueditor/ueditor.all.js"></script>
+    <script src="/vendor/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script src="/js/components/user.js"></script>
+    <script src="/js/axios.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/dataList.js"></script>
+    <script src="/js/dataGallery.js"></script>
+    <script src="/js/dataPost.js"></script>
+    <script src="/js/components/directive/ajaxSelect.js"></script>
+    <script src="/js/components/directive/ajaxCascader.js"></script>
+    <script src="/js/components/directive/location.js"></script>
+</head>
+<body>
+<div id="app" v-cloak>
+    <Back-top></Back-top>
+
+    <div class="layout">
+        <Row type="flex">
+            <i-col :span="3" class="layout-menu-left">
+
+                <Row class-name="layout-logo-left">
+                    <div class="logo">
+                        <a href="#"><img src="/images/logo.png" title="简鱼"/></a>
+                    </div>
+                </Row>
+
+                <Row class-name="layout-search-left">
+                    <i-input icon="search" v-model="searchKeyword" @on-enter="menuSearch"></i-input>
+                </Row>
+                <?php
+                $menus = \Application\Core\Models\PlatformMenu::menuList($adminInfo->id); ?>
+                <i-menu ref="menu" theme="dark" width="auto" :open-names="activeMenu.slice(0,1)" :active-name="activeMenu[0]+'-'+activeMenu[1]">
+                    <Submenu name="0">
+                        <template slot="title">
+                            <Icon type="ios-speedometer" :size="iconSize"></Icon>
+                            <span class="layout-text">控制台</span>
+                        </template>
+                        <a href="/main">
+                            <Menu-item name="0-0">最近更新</Menu-item>
+                        </a>
+                    </Submenu>
+                    <?php foreach ($menus as $menu) { ?>
+                        <?php if (sizeof($menu['children'])) { ?>
+                            <Submenu name="<?php echo $menu['id'] ?>">
+                                <template slot="title">
+                                    <Icon type="<?php echo $menu['icon'] ? $menu['icon'] : 'folder' ?>" :size="iconSize"></Icon>
+                                    <span class="layout-text"><?php echo $menu['name'] ?></span>
+                                </template>
+                                <?php foreach ($menu['children'] as $child) { ?>
+                                    <!--                                    <Menu-item @click="menuSwitch(--><?php //echo $menu['id'] ?><!--,--><?php //echo $child['id'] ?><!--,'--><?php //echo $child['link'] ?><!--')" name="--><?php //echo $menu['id'] ?><!-----><?php //echo $child['id'] ?><!--">--><?php //echo $child['name'] ?><!--</Menu-item>-->
+                                    <a href="<?php echo $child['link'] ?>">
+                                        <Menu-item name="<?php echo $menu['id'] ?>-<?php echo $child['id'] ?>">
+                                            <?php echo $child['name'] ?>
+                                        </Menu-item>
+                                    </a>
+                                <?php } ?>
+                            </Submenu>
+                        <?php } else { ?>
+                            <a href="<?php echo $menu['link'] ?>">
+                                <Menu-item name="<?php echo $menu['id'] ?>">
+                                    <Icon type="<?php echo $menu['icon'] ? $menu['icon'] : 'folder' ?>" :size="iconSize"></Icon>
+                                    <span class="layout-text"><?php echo $menu['name'] ?></span>
+                                </Menu-item>
+                            </a>
+                        <?php } ?>
+                    <?php } ?>
+                </i-menu>
+            </i-col>
+
+
+            <i-col :span="21" class-name="layout-right">
+
+                <Row class="layout-header" type="flex">
+                    <i-col span="12" class-name="layout-header-title">
+                        <div>简鱼电销售运营管理平台 V{{version}}</div>
+                    </i-col>
+                    <i-col span="12">
+                        <Row type="flex" justify="end">
+                            <Dropdown placement="bottom-end">
+                                <a href="javascript:void(0)">
+                                    <span class="fixed-admin-info">{{ adminName }}</span>
+                                    <Icon type="ios-person" size="25"></Icon>
+
+                                </a>
+                                <Dropdown-menu slot="list">
+                                    <Dropdown-item>
+                                        <a href="/administrator/post?id=1">
+                                            <Icon type="locked"></Icon>
+                                            &nbsp; 修改密码
+                                        </a>
+                                    </Dropdown-item>
+                                    <Dropdown-item>
+                                        <a @click="logout">
+                                            <Icon type="log-out"></Icon>
+                                            &nbsp; 退出登录
+                                        </a>
+                                    </Dropdown-item>
+                                </Dropdown-menu>
+                            </Dropdown>
+                        </Row>
+                    </i-col>
+                </Row>
+                <Row class-name="layout-copy">
+                    &copy; 2016-2021 简鱼电销售运营管理平台 V{{version}}.{{build}} Power by&nbsp;<a target="_blank" href="http://www.janfish.cn"> Janfish.cn </a>
+                </Row>
+                <?php echo $this->getContent(); ?>
+
+            </i-col>
+        </Row>
+    </div>
+
+
+</div>
+
+
+</body>
+</html>

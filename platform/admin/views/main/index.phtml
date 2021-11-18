@@ -1,0 +1,275 @@
+<Row class-name="layout-breadcrumb">
+    <Breadcrumb>
+        <Breadcrumb-item>控制台</Breadcrumb-item>
+        <Breadcrumb-item>最新更新</Breadcrumb-item>
+    </Breadcrumb>
+</Row>
+
+
+<Row class="console">
+    <Row class="row">
+        <i-col span="12" class="col">
+            <Card>
+                <Row class="new">
+                    <Row class="title">{{platformData.platform.title}}</Row>
+                    <Row class="box">
+                        <i-table :columns="platformData.platform.columns" :data="platformData.platform.items" :border="true" stripe></i-table>
+
+                    </Row>
+                </Row>
+            </Card>
+        </i-col>
+        <i-col span="12" class="col">
+            <Card>
+                <Row class="service">
+                    <Row class="title">{{platformData.order.title}}</Row>
+                    <Row class="box">
+                        <table class="tb" v-if="platformData.order.items.length">
+                            <tr v-for="item in platformData.order.items">
+                                <td width="150">{{ item.name }}</td>
+                                <td>{{ item.order_item_name }}</td>
+                                <td width="50" align="right">{{ item.year }}</td>
+                            </tr>
+                        </table>
+                        <Row v-else>暂无信息</Row>
+                    </Row>
+                </Row>
+            </Card>
+        </i-col>
+    </Row>
+
+    <Row class="row">
+        <i-col span="12" class="col">
+            <Card>
+                <Row class="update">
+                    <Row class="title">{{platformData.maintenance.title}}</Row>
+                    <Row class="box">
+                        <table class="tb" 　v-if="platformData.maintenance.items.length">
+                            <tr v-for="item in platformData.maintenance.items">
+                                <td width="55"><img :src="item.image" width="40" height="40"/></td>
+                                <td>
+                                    <Row class="sub-tile"><span class="tag">{{item.work_tag_name}}</span><span>{{ item.nickname }}</span> <span class="date">{{ item.work_date }}</span></Row>
+                                    <Row v-html="item.title"></Row>
+                                </td>
+
+                            </tr>
+                        </table>
+                        <Row v-else>暂无信息</Row>
+                    </Row>
+
+                </Row>
+            </Card>
+        </i-col>
+        <i-col span="12" class="col">
+            <Card>
+                <Row class="notification">
+                    <Row class="title">{{platformData.news.title}}</Row>
+                    <Row class="box">
+                        <i-table :columns="platformData.news.columns" :data="platformData.news.items" :border="true" stripe></i-table>
+                    </Row>
+                </Row>
+            </Card>
+        </i-col>
+    </Row>
+
+    <Row class="row">
+        <i-col span="12" class="col">
+            <Card>
+                <Row class="manage">
+                    <Row class="title">{{platformData.manage.title}}</Row>
+                    <Row class="box">
+                        <table class="tb" v-if="platformData.manage.items.length">
+                            <tr v-for="item in platformData.manage.items">
+                                <td width="55"><img :src="item.image" width="40" height="40"/></td>
+                                <td>
+                                    <Row class="sub-tile"><span class="tag">{{item.work_tag_name}}</span><span class="date">{{ item.work_date }}</span></Row>
+                                    <Row v-html="item.title"></Row>
+                                </td>
+                            </tr>
+                        </table>
+                        <Row v-else>暂无信息</Row>
+                    </Row>
+                </Row>
+            </Card>
+        </i-col>
+        <i-col span="12" class="col">
+            <Card>
+                <Row class="message">
+                    <Row class="title">{{platformData.comment.title}}</Row>
+                    <Row class="box">
+
+                        <i-input v-model="commentData.content" type="textarea" placeholder="问题或者意见，请您留言" :rows="9"></i-input>
+
+                        <Row class="btn-box">
+                            <i-button type="primary" @click="handleSubmit()">提交</i-button>
+                        </Row>
+                    </Row>
+
+                </Row>
+            </Card>
+        </i-col>
+    </Row>
+
+</Row>
+<script type="text/javascript" src="//cdn.bootcss.com/iScroll/5.2.0/iscroll.min.js"></script>
+<script>
+    var main = new Janfish({
+        el: '#app',
+        data: {
+            platformServiceUrl: "<?php echo $platformServiceUrl;?>",
+            platformData: {
+                platform: {
+                    title: "",
+                    columns: [
+                        {
+                            "key": "created_date",
+                            "title": "日期",
+                            "width": 102
+                        },
+                        {
+                            "key": "title",
+                            "title": "标题"
+                        }
+                    ],
+                    items: []
+                },
+                order: {
+                    title: "",
+                    columns: [
+                        {
+                            "key": "name",
+                            "title": "服务"
+                        },
+                        {
+                            "key": "order_item_name",
+                            "title": "类型"
+                        },
+                        {
+                            "key": "year",
+                            "title": "年数"
+                        }
+                    ],
+                    items: []
+                },
+                manage: {
+                    title: "",
+                    columns: [
+                        {
+                            "key": "title",
+                            "title": "内容"
+                        },
+                        {
+                            "key": "work_tag_name",
+                            "title": "标签"
+                        },
+                        {
+                            "key": "work_date",
+                            "title": "日期"
+                        }
+                    ],
+                    items: []
+                },
+                news: {
+                    title: "",
+                    columns: [
+                        {
+                            "key": "title",
+                            "title": "标题"
+                        },
+                        {
+                            width: 102,
+                            "key": "created_date",
+                            "title": "日期"
+                        }
+                    ],
+                    items: []
+                },
+                comment: {
+                    title: "",
+                    columns: [],
+                    items: []
+                },
+                maintenance: {
+                    title: "",
+                    columns: [
+                        {
+                            "key": "title",
+                            "title": "内容"
+                        },
+                        {
+                            "key": "work_tag_name",
+                            "title": "标签"
+                        },
+                        {
+                            "key": "nickname",
+                            "title": "人员"
+                        },
+                        {
+                            "key": "work_date",
+                            "title": "日期"
+                        }
+                    ],
+                    items: []
+                }
+
+            },
+            commentData: {"content": "", "key": "<?php echo $configKey;?>", "administrator_name": "<?php echo $adminInfo->name;?>"}
+        },
+        methods: {
+            handleSubmit: function () {
+                var _this = this, url = _this.platformServiceUrl + 'platform/comment';
+                _this.$http.post(url, qs.stringify(_this.commentData)).then(function (response) {
+                    if (response.status !== "success") {
+                        _this.$Message.success({content: response.message, duration: 3});
+                        return false;
+                    }
+                    _this.commentData.content = '';
+                    _this.$Message.success({content: '感谢您的反馈，我们收到消息后，会在一个工作日内与您联系', duration: 3});
+                });
+            },
+            getPlatformData: function () {
+                var _this = this, data;
+                _this.$http.get('/main').then(function (response) {
+                    if (response.status !== "success") {
+                        _this.$Message.error(response.message);
+                        return false;
+                    }
+                    if (200 == response.data.data.code) {
+                        data = response.data.data.data.data;
+                        _this.platformData.platform.items = data.platform.items;
+                        _this.platformData.platform.title = data.platform.title;
+                        _this.platformData.order.items = data.order.items;
+                        _this.platformData.order.title = data.order.title;
+                        _this.platformData.manage.items = data.manage.items;
+                        _this.platformData.manage.title = data.manage.title;
+                        _this.platformData.news.items = data.news.items;
+                        _this.platformData.news.title = data.news.title;
+                        _this.platformData.comment.items = data.comment.items;
+                        _this.platformData.comment.title = data.comment.title;
+                        _this.platformData.maintenance.items = data.maintenance.items;
+                        _this.platformData.maintenance.title = data.maintenance.title;
+                    }
+                    setTimeout(function () {
+                        var i, box = document.getElementsByClassName('box');
+                        for (i = 0; i < box.length; i++) {
+                            new IScroll(box[i], {
+//                                mouseWheel: true,
+                                scrollbars: true,
+                                bounce: true,
+                                interactiveScrollbars: true,
+                                fadeScrollbars: true
+                            });
+                        }
+
+                    }, 200);
+                });
+
+            }
+        },
+        mounted: function () {
+            this.setActiveMenu(["0", "0"]);
+            this.getPlatformData();
+        }
+    })
+</script>
+

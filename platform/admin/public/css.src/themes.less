@@ -1,0 +1,356 @@
+.layout {
+  background: #f1f3f5;
+}
+
+.layout-menu-left {
+  min-height: 100vh;
+  background: #182433;
+  .ivu-menu-submenu-title, .ivu-menu-item {
+    .ivu-icon {
+      position: relative;
+      top: 2px;
+    }
+  }
+  .layout-search-left {
+    padding: 15px 15px 15px 15px;
+    .ivu-input-icon {
+      left: 0;
+    }
+    input {
+      padding: 0 10px 0 30px;
+      color: #ffffff;
+      border: 0;
+      height: 30px;
+      width: 100%;
+      background-color: #303a48;
+    }
+  }
+
+  .layout-logo-left {
+    width: 100%;
+    height: 60px;
+    background: #2d8cf0;
+
+    .logo {
+
+      width: 100px;
+      height: 30px;
+      padding: 15px 0 0 25px;
+      img {
+        display: block;
+      }
+    }
+  }
+
+  .ivu-menu-dark {
+    background: #182433;
+  }
+
+  .ivu-menu-dark.ivu-menu-vertical .ivu-menu-opened {
+    background: #111924;
+  }
+
+  .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active, .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active:hover {
+    background: #223347 !important
+  }
+
+  .ivu-menu-dark.ivu-menu-vertical .ivu-menu-opened .ivu-menu-submenu-title {
+    background: #182433;
+  }
+
+}
+
+.layout-right {
+  position: relative;
+  padding-bottom: 50px;
+  .layout-header {
+    box-sizing: border-box;
+    padding: 15px 20px 0 20px;
+    height: 60px;
+    background: #fff;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+    .layout-header-title {
+      font-size: 20px;
+    }
+
+  }
+
+  .layout-breadcrumb {
+    padding: 10px 15px 10px 15px;
+    border-bottom: 1px solid #e5e6e8;
+  }
+
+  .layout-filter {
+    padding: 0 5px;
+    margin: 15px;
+    border-radius: 4px;
+    .ivu-form-item {
+      margin-bottom: 5px;
+    }
+  }
+  .layout-content-page {
+    margin: 15px 0;
+  }
+
+}
+
+.layout-copy {
+  width: 100%;
+  font-size: 14px;
+  text-align: center;
+  padding: 10px 0 20px;
+  color: #9ea7b4;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.layout-gallery {
+
+  .layout-gallery-item {
+    padding: 8px 8px;
+    box-sizing: border-box;
+    .image-item-box {
+      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.03);
+      border: 1px solid #dddee1;
+      cursor: pointer;
+      box-sizing: border-box;
+      &.selected {
+        border: 1px solid #2d8cf0;
+        box-shadow: 0 0 0 2px #2d8cf0;
+
+      }
+      .image {
+        height: 6vw;
+        padding: 10px 10px 0 10px;
+
+        div {
+          height: 100%;
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+          position: relative;
+          .edit-link {
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            color: #ffffff;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: block;
+            text-align: right;
+            padding: 5px 10px;
+            width: 100%;
+          }
+        }
+        &:hover {
+          div {
+            .edit-link {
+              display: block;
+            }
+          }
+
+        }
+
+        .checkbox {
+
+          position: absolute;
+          left: 10px;
+          top: 10px;
+
+        }
+        img {
+
+          display: block;
+          width: 100%;
+        }
+      }
+      .title {
+        //text-align: center;
+        padding: 6px 10px 4px 10px;
+
+        a, input {
+          display: block;
+          margin-bottom: 4px;
+          width: 100%;
+          padding: 3px 5px;
+        }
+        a {
+          border: 1px solid #ffffff;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        input {
+          border: 1px solid #efefef;
+          color: #495060;
+
+        }
+      }
+    }
+
+  }
+}
+
+.ivu-modal-body {
+  word-break: break-all;
+}
+
+.fixed-label-position {
+  position: relative;
+  top: 2px;
+}
+
+.layout-content {
+  margin: 15px;
+  border-radius: 4px;
+}
+
+.layout-data-list, .layout-form {
+  background: #fff;
+  padding: 25px;
+}
+
+.layout-content-form {
+  margin: 25px 0;
+}
+
+.layout-content-title {
+  margin: 0 0 12px 0;
+  .align-right {
+    text-align: right;
+  }
+}
+
+.layout-post-preview {
+  img {
+    margin-right: 6px;
+  }
+
+}
+
+[v-cloak] {
+  display: none;
+}
+
+.gallery-preview-modal {
+  img {
+    width: 100%;
+  }
+
+}
+
+.layout-post-editor {
+
+  .ivu-form-item-content {
+    line-height: 10px;
+  }
+
+}
+
+.html-wrapper {
+  height: 100%;
+}
+
+.login-page {
+
+  height: 100%;
+  background-color: #1767cc;
+  background-image: url("../images/login-bg.jpg");
+  background-size: cover;
+  .login-copy {
+    font-size: 14px;
+    color: #ffffff;
+    position: fixed;
+    bottom: 60px;
+    width: 100%;
+    z-index: 999;
+  }
+
+  .login-panel {
+    position: relative;
+    z-index: 999;
+    height: 100%;
+    .login-qr{
+      height: 310px;
+      .tips{
+        text-align: center;
+        color: #ffffff;
+        margin-top: 20px;
+      }
+      .qr-image{
+        box-sizing: content-box;
+        background-color: #ffffff;
+        padding: 20px;
+        width: 185px;
+        height: 185px;
+        margin: 10px auto;
+        img{
+          display: block;
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+    h1 {
+      margin-bottom: 45px;
+      text-align: center;
+      //font-size: 42px;
+      font-size: 40px;
+      color: #ffffff;
+      font-weight: normal;
+    }
+    .ivu-btn-large {
+      height: 60px;
+      font-size: 24px;
+      background-color: #1495eb;
+      box-shadow: 0 2px 2px 0 rgba(15, 28, 42, 0.1);
+    }
+    .ivu-checkbox-wrapper {
+      color: #ffffff;
+      font-size: 16px;
+    }
+    .ivu-input-large {
+      border: 1px solid rgba(17, 25, 36, 0);
+      height: 60px;
+      //box-shadow: 0 0  3px -2px rgba(0,0,0,0.1) inset;
+      background: rgba(17, 25, 36, 0.5);
+      font-size: 20px;
+      color: #ffffff;
+      padding-left: 20px;
+      &:focus {
+        border: 1px solid #1495eb;
+        //border-color: #57a3f3;
+        outline: 0;
+        box-shadow: 0 0 8px 2px rgba(20, 149, 235, .6), 0 0 3px 0 rgba(0, 0, 0, 0.1) inset;
+      }
+    }
+  }
+}
+
+.check-box-row {
+  display: inline-block;
+  width: 200px;
+}
+
+.fixed-admin-info {
+  position: relative;
+  top: -4px;
+  right: 5px;
+  font-size: 14px;
+  text-transform: capitalize;
+}
+
+.show404 {
+  .tips {
+    margin: 20px 0;
+    p {
+      margin: 8px 0;
+      text-indent: 1em;
+    }
+  }
+}
+
+
+@import "common/main.less";

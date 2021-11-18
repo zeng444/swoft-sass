@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html class="html-wrapper">
+<head>
+    <meta charset="utf-8">
+    <title>简鱼内容管理系统</title>
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcdn.net/ajax/libs/iview/2.10.0/styles/iview.css">
+    <link rel="stylesheet" type="text/css" href="/css/bubble.css">
+    <link rel="stylesheet" type="text/css" href="/css/themes.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.5.2/qs.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.4.2/vue.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/iview/2.10.0/iview.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.16.1/axios.min.js"></script>
+    <script src="/vendor/vue-cookie/vue-cookie.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/purl/2.3.1/purl.min.js"></script>
+    <script src="/js/components/user.js"></script>
+    <script src="/js/axios.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/dataPost.js"></script>
+    <script src="/js/components/directive/bubble.js"></script>
+</head>
+<body class="login-page">
+
+
+<div id="app" class="html-wrapper" v-cloak>
+
+    <Row class-name="login-panel" type="flex" justify="center" align="middle">
+
+        <i-col :lg="12">
+            <h1> 简鱼内容管理系统 V{{version}} </h1>
+            <Row type="flex" justify="center">
+                <i-col :lg="10">
+                    <Tabs :animated="false" >
+                        <Tab-pane label="账户登录">
+                            <i-form ref="form" :model="formData" :rules="validation">
+                                <Form-item prop="username">
+                                    <i-input maxlength="20" v-model="formData.username" size="large" placeholder="用户名" @on-enter="handleSubmit('form')" autofocus></i-input>
+                                </Form-item>
+                                <Form-item prop="password">
+                                    <i-input maxlength="17" v-model="formData.password" type="password" size="large" placeholder="密码" @on-enter="handleSubmit('form')"></i-input>
+                                </Form-item>
+                                <Form-item>
+                                    <Checkbox :value="formData.remember==1" @on-change="function(status){ formData.remember=status?1:0}">&nbsp;&nbsp;记住登录状态</Checkbox>
+                                </Form-item>
+                                <Form-item>
+                                    <i-button type="primary" @click="handleSubmit('form')" size="large" long>登录</i-button>
+                                </Form-item>
+                            </i-form>
+
+                        </Tab-pane>
+                        <Tab-pane label="微信登录">
+                            <Row class-name="login-qr">
+                                <div class="qr-image" id="qr-image"></div>
+                                <div class="tips" v-html="tips"></div>
+                            </Row>
+                        </Tab-pane>
+                    </Tabs>
+
+
+                </i-col>
+            </Row>
+        </i-col>
+    </Row>
+
+    <Row type="flex" justify="center" class-name="login-copy">
+        &copy; 简鱼内容管理系统 2016-2021 Power by&nbsp;<a target="_blank" href="http://www.janfish.cn"> Janfish.cn</a>
+    </Row>
+
+    <bubble seed-number="26"></bubble>
+
+</div>
+<script src="https://cdn.bootcdn.net/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="/js/login.js"></script>
+</body>
+</html>

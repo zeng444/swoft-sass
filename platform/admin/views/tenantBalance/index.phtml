@@ -1,0 +1,161 @@
+<Row class-name="layout-breadcrumb">
+    <Breadcrumb v-if="!id">
+        <Breadcrumb-item href="#">充值明细</Breadcrumb-item>
+        <Breadcrumb-item>资金明细</Breadcrumb-item>
+    </Breadcrumb>
+    <Breadcrumb v-else>
+        <Breadcrumb-item href="#">租客管理</Breadcrumb-item>
+        <Breadcrumb-item href="/tenant/index">租客列表</Breadcrumb-item>
+        <Breadcrumb-item>租客“{{tenantName}}”的充值明细</Breadcrumb-item>
+    </Breadcrumb>
+</Row>
+
+<Row class-name="layout-filter">
+
+    <i-form inline="true" v-if="!id">
+        <Form-item>数据筛选</Form-item>
+        <Form-item style="width: 120px">
+            <i-input placeholder="Id" v-model="searchFilter.id"></i-input>
+        </Form-item>
+        <Form-item>
+            <i-ajax-select model="\Application\Core\Models\Tenant" attribute="name" v-model="searchFilter.tenantId"
+                           placeholder="租客" :clearable="true"></i-ajax-select>
+        </Form-item>
+        <Form-item style="width: 120px">
+            <i-input placeholder="本地订单号" v-model="searchFilter.outTradeNo"></i-input>
+        </Form-item>
+        <Form-item style="width: 120px">
+            <i-input placeholder="渠道订单号" v-model="searchFilter.transactionId"></i-input>
+        </Form-item>
+        <Form-item>
+            <i-select placeholder="业务类型" v-model="searchFilter.biz">
+                <i-option value="SMS">SMS</i-option>
+                <i-option value="LICENSE">LICENSE</i-option>
+            </i-select>
+        </Form-item>
+        <Form-item style="width: 120px">
+            <i-input placeholder="业务数据" v-model="searchFilter.bizData"></i-input>
+        </Form-item>
+        <Form-item>
+            <i-input placeholder="金额" v-model="searchFilter.fee"></i-input>
+        </Form-item>
+        <Form-item>
+            <Date-picker type="daterange" placeholder="查询支付时间" format="yyyy-MM-dd"
+                         @on-change="searchFilter.paidAt_range=$event"
+                         v-model="searchFilter.paidAt_range"></Date-picker>
+        </Form-item>
+
+
+        <Form-item>
+            <i-button type="primary" @click="loadList(1, pageSize)">搜索</i-button>
+            <i-button @click="resetFilter">重置</i-button>
+        </Form-item>
+
+    </i-form>
+
+</Row>
+
+
+<Row class-name="layout-content">
+    <i-col class-name="layout-data-list">
+
+        <Row class-name="layout-content-title">
+            <i-col span="12">
+                <h3>资金明细</h3>
+            </i-col>
+            <i-col span="12" class-name="align-right">
+                <Button-group>
+
+                </Button-group>
+
+            </i-col>
+        </Row>
+
+        <i-table :columns="columns" :data="data" @on-selection-change="selectionChange" :border="true"
+                 @on-sort-change="remoteSort" stripe></i-table>
+
+
+        <Row class="layout-content-page">
+            <i-col span="10">
+                <Button-group></Button-group>
+            </i-col>
+
+            <i-col span="14">
+                <Row type="flex" justify="end">
+                    <Page v-on:on-change="pageChange" size="small" v-on:on-page-size-change="sizeChange" :total="count"
+                          :page-size="pageSize" :current="page" show-elevator show-total></Page>
+                </Row>
+            </i-col>
+        </Row>
+
+    </i-col>
+</Row>
+
+
+<script>
+    (function () {
+        "use strict";
+        var tenantBalance = new Janfish_DataList({
+            el: "#app",
+            methods: {
+                listPostData: function (filter) {
+                    filter.tenantId = this.purl.param.id;
+                    this.id = filter.tenantId;
+                    return filter;
+                },
+                afterDataLoad:function (data){
+                    this.tenantName = data.tenantName
+                    return data;
+                }
+            },
+            data: {
+                tenantName :"",
+                id: '',
+                api: {
+                    search: '/tenantBalance',
+                },
+                page: 1,
+                pageSize: 12,
+                searchFilter: {
+                    "id": "",
+                    "tenantId": "",
+                    "outTradeNo": "",
+                    "transactionId": "",
+                    "biz": "",
+                    "bizData": "",
+                    "fee": "",
+                    "remark": "",
+                    "paidAt_range": "",
+                    "createdAt_range": ""
+                },
+                columns: [
+                    {"sortable": "custom", "title": "Id", "key": "id", "width": 80},
+                    {
+                        "sortable": "custom", "title": "租客", "key": "tenantId", render: function (h, params) {
+                            return params.row.tenantName + "(" + params.row.tenantId + ")"
+                        }
+                    },
+                    {"sortable": "custom", "title": "本地订单号", "key": "outTradeNo"},
+                    {"sortable": "custom", "title": "支付渠道订单号", "key": "transactionId"},
+                    {"sortable": "custom", "title": "业务类型", "key": "biz"},
+                    {"sortable": "custom", "title": "业务数据", "key": "bizData"},
+                    {"sortable": "custom", "title": "金额", "key": "fee"},
+                    {"sortable": "custom", "title": "业务备注", "key": "remark"},
+                    {"sortable": "custom", "title": "支付时间", "key": "paidAt", "width": 160},
+                    {"sortable": "custom", "title": "创建时间", "key": "createdAt", "width": 160},
+                    {"sortable": "custom", "title": "更新时间", "key": "updatedAt", "width": 160},
+                ]
+            },
+            mounted: function () {
+                if (this.id) {
+                    this.setActiveMenu(["37", "38"]);
+                } else {
+                    this.setActiveMenu(["39", "40"]);
+                }
+
+            }
+        });
+
+    }());
+
+</script>

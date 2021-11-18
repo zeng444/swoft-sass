@@ -1,0 +1,110 @@
+<Row class-name="layout-breadcrumb">
+    <Breadcrumb>
+        <Breadcrumb-item href="#">系统管理</Breadcrumb-item>
+        <Breadcrumb-item href="/administratorRole">管理员角色管理</Breadcrumb-item>
+        <Breadcrumb-item><template v-if="isNew">创建</template><template v-else>编辑</template>管理员角色</Breadcrumb-item>
+    </Breadcrumb>
+</Row>
+
+<Row class-name="layout-content">
+
+    <i-col class-name="layout-form">
+
+        <Row class-name="layout-content-title">
+            <i-col span="12">
+                <h3><template v-if="isNew">创建</template><template v-else>编辑</template>管理员角色</h3>
+            </i-col>
+            <i-col span="12" class-name="align-right">
+                <Button-group>
+                    <i-button icon="ios-arrow-back" v-on:click="location.href='/administratorRole'">返回</i-button>
+                </Button-group>
+            </i-col>
+        </Row>
+
+        <Row class-name="layout-content-form">
+            <i-col span="24">
+
+                <i-form ref="form" :model="formData" :rules="validation" label-width="100">
+
+                    <Form-item label="角色名" prop="name">
+                        <i-input v-model="formData.name" placeholder="请输入"></i-input>
+                    </Form-item>
+
+                    <Form-item label="权限管理" v-if="formData.id!='1'">
+                        <template v-for="item,index in formData.acl">
+                            <Row><h3>{{ item.name }}</h3></Row>
+                            <Row v-for="it,key in item.rule" class-name="check-box-row">
+                                <Checkbox v-model="formData.rule[key]">{{ it }}</Checkbox>
+                            </Row>
+                        </template>
+                        <Row>
+                            <h3>全选</h3>
+                            <Checkbox @on-change="selectAll">全选</Checkbox>
+                        </Row>
+                    </Form-item>
+
+                    <Form-item>
+                        <i-button type="primary" @click="handleSubmit('form')">提交</i-button>
+                        <i-button type="ghost" @click="handleReset('form')" style="margin-left: 8px">重置</i-button>
+                    </Form-item>
+
+                </i-form>
+
+            </i-col>
+        </Row>
+
+    </i-col>
+</Row>
+
+<script>
+
+    (function () {
+
+        "use strict";
+
+        var administratorRole = new Janfish_DataPost({
+            el: "#app",
+            data: {
+                formData: {
+                    acl: [],
+                    rule: []
+                },
+                api: {
+                    post: '/administratorRole/post'
+                },
+                validation: {
+                    name: [
+                        {required: true, message: '角色名不能为空', trigger: 'blur'}
+                    ]
+                }
+            },
+            methods: {
+                afterLoad: function (data) {
+                    var i, j;
+                    for (i in data.acl) {
+                        for (j in data.acl[i].rule) {
+                            data.rule[j] = data.rule[j] !== undefined;
+                        }
+                    }
+                    return data;
+                },
+                beforePost: function (data) {
+                    return data;
+                },
+                selectAll: function (state) {
+                    var i, j;
+                    for (i in this.formData.acl) {
+                        for (j in this.formData.acl[i].rule) {
+                            this.formData.rule[j] = state;
+                        }
+                    }
+                }
+            },
+            mounted: function () {
+                this.setActiveMenu(['2', '28']);
+            }
+        })
+    }());
+
+
+</script>

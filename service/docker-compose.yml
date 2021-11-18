@@ -1,0 +1,27 @@
+version: '3.4'
+services:
+
+  sass-service:
+    image: swoft/swoft
+#    for local develop
+#    command: ["php","/var/www/swoft/bin/swoft","http:start"]
+    command: ["php","./swoftcli.phar","run","-c","rpc:start"]
+#    command: "php -a"
+ #   tty: true
+    container_name: sass-service
+    environment:
+      - APP_ENV=dev
+      - TIMEZONE=Asia/Shanghai
+    restart: always
+    expose:
+      - 18306-18308
+    volumes:
+       - ./:/var/www/swoft
+    extra_hosts:
+      - "static.cat.cn:10.0.2.15"
+      - "api.oss.cat.cn:10.0.2.15"
+
+networks:
+  default:
+    external:
+      name: janfish

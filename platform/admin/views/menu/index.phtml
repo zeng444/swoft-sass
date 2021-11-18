@@ -1,0 +1,104 @@
+<Row class-name="layout-breadcrumb">
+    <Breadcrumb>
+        <Breadcrumb-item>功能搜索</Breadcrumb-item>
+        <Breadcrumb-item>搜索关键字 “{{ initKeyword }}” 结果</Breadcrumb-item>
+    </Breadcrumb>
+</Row>
+
+<Row class-name="layout-filter">
+
+    <i-form inline="true">
+        <Form-item>数据筛选</Form-item>
+        <Form-item>
+            <i-input placeholder="关键词" v-model="searchFilter.keyword"></i-input>
+        </Form-item>
+
+        <Form-item>
+            <i-button type="primary" @click="loadList(1, pageSize)">搜索</i-button>
+            <i-button @click="resetFilter">重置</i-button>
+        </Form-item>
+    </i-form>
+
+</Row>
+
+
+<Row class-name="layout-content">
+    <i-col class-name="layout-data-list">
+
+        <Row class-name="layout-content-title">
+            <i-col span="24">
+                <h3>栏目列表</h3>
+            </i-col>
+        </Row>
+
+        <i-table :columns="columns" :data="data" @on-selection-change="selectionChange" :border="true" @on-sort-change="remoteSort" stripe></i-table>
+
+        <Row class="layout-content-page">
+            <i-col span="10">
+                <Button-group>
+
+                </Button-group>
+            </i-col>
+            <i-col span="14">
+                <Row type="flex" justify="end">
+                    <Page v-on:on-change="pageChange" size="small" v-on:on-page-size-change="sizeChange" :total="count" :page-size="pageSize" :current="page" show-elevator show-total></Page>
+                </Row>
+            </i-col>
+        </Row>
+
+    </i-col>
+</Row>
+<script>
+    (function () {
+        "use strict";
+
+        var menu = new Janfish_DataList({
+            el: "#app",
+            data: {
+                api: {
+                    search: '/menu'
+                },
+                initKeyword: '',
+                searchFilter: {
+                    keyword: ''
+                },
+                page: 1,
+                pageSize: 12,
+                columns: [
+                    {
+                        title: '栏目名称',
+                        key: 'name',
+                        width: '15%'
+                    },
+                    {
+                        title: '地址',
+                        key: 'link',
+                        render: function (h, params) {
+                            return h('a', {
+                                attrs: {
+                                    href: params.row.link
+                                }
+                            }, params.row.link);
+                        }
+                    }
+                ]
+            },
+            methods: {
+                listPostData: function (data) {
+                    if (this.purl.param.keyword && !data.keyword) {
+                        data.keyword = this.purl.param.keyword;
+                    }
+                    return data;
+                },
+                afterDataLoad: function (data) {
+                    this.initKeyword = data.keyword;
+                    return data;
+                }
+            },
+            mounted: function () {
+            }
+        });
+
+    }());
+
+</script>

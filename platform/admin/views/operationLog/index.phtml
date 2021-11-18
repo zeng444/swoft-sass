@@ -1,0 +1,172 @@
+<Row class-name="layout-breadcrumb">
+    <Breadcrumb>
+        <Breadcrumb-item href="#">操作日志</Breadcrumb-item>
+        <Breadcrumb-item>日志列表</Breadcrumb-item>
+    </Breadcrumb>
+</Row>
+
+<Row class-name="layout-filter">
+
+    <i-form inline="true">
+        <Form-item>数据筛选</Form-item>
+        <Form-item>
+            <i-input placeholder="Id" v-model="searchFilter.id"></i-input>
+        </Form-item>
+        <Form-item>
+            <i-select placeholder="Event" v-model="searchFilter.event">
+                <i-option value="DELETE">DELETE</i-option>
+                <i-option value="CREATE">CREATE</i-option>
+                <i-option value="UPDATE">UPDATE</i-option>
+            </i-select>
+        </Form-item>
+        <Form-item>
+            <i-input placeholder="IP地址" v-model="searchFilter.ip"></i-input>
+        </Form-item>
+        <Form-item>
+            <i-input placeholder="行为" v-model="searchFilter.action"></i-input>
+        </Form-item>
+        <Form-item>
+            <i-input placeholder="数据" v-model="searchFilter.data"></i-input>
+        </Form-item>
+        <Form-item>
+            <i-input placeholder="操作人ID" v-model="searchFilter.administrator_id"></i-input>
+        </Form-item>
+        <Form-item>
+            <i-input placeholder="操作人姓名" v-model="searchFilter.administrator_name"></i-input>
+        </Form-item>
+        <Form-item>
+            <Date-picker type="daterange" placeholder="查询创建时间" format="yyyy-MM-dd" @on-change="searchFilter.createdAt_range=$event" v-model="searchFilter.createdAt_range"></Date-picker>
+        </Form-item>
+
+        <Form-item>
+            <i-button type="primary" @click="loadList(1, pageSize)">搜索</i-button>
+            <i-button @click="resetFilter">重置</i-button>
+        </Form-item>
+
+    </i-form>
+
+</Row>
+
+
+<Row class-name="layout-content">
+    <i-col class-name="layout-data-list">
+
+        <Row class-name="layout-content-title">
+            <i-col span="12">
+                <h3>日志列表</h3>
+            </i-col>
+            <i-col span="12" class-name="align-right">
+                <Button-group></Button-group>
+
+            </i-col>
+        </Row>
+
+        <i-table :columns="columns" :data="data" @on-selection-change="selectionChange" :border="true" @on-sort-change="remoteSort" stripe></i-table>
+
+
+        <Row class="layout-content-page">
+
+            <i-col span="10">
+                <Button-group></Button-group>
+            </i-col>
+
+            <i-col span="14">
+                <Row type="flex" justify="end">
+                    <Page v-on:on-change="pageChange" size="small" v-on:on-page-size-change="sizeChange" :total="count" :page-size="pageSize" :current="page" show-elevator show-total></Page>
+                </Row>
+            </i-col>
+
+        </Row>
+
+    </i-col>
+</Row>
+
+
+<template>
+    <Modal :mask-closable="false" ref="previewPanel" v-model="showPreview" title="变更记录" width="70%">
+        <i-form ref="form1" label-width="60">
+            <Form-item label="变更记录">
+                <div id="jsonEditor">
+                    <i-button type="primary" @click="showPreview=!showPreview">关闭</i-button>
+                </div>
+            </Form-item>
+        </i-form>
+        <div slot="footer">
+            <i-button type="primary" @click="showPreview=!showPreview">关闭</i-button>
+        </div>
+    </Modal>
+</template>
+
+
+<script>
+    (function () {
+        "use strict";
+        var operationLog = new Janfish_DataList({
+            el: "#app",
+            methods: {
+                displayPreview: function (row) {
+                    this.previewData = row;
+                    this.showPreview = !this.showPreview;
+                    var container = document.getElementById("jsonEditor");
+                    container.innerHTML = '';
+                    var options = {
+                        "mode": "view", //tree, view, form, code, text.
+                        "escapeUnicode": false
+                        //"indentation": 2
+                    };
+                    var editor = new JSONEditor(container, options);
+                    editor.set(JSON.parse(row.data));
+                    editor.expandAll();
+                }
+            },
+            data: {
+                api: {
+                    search: '/operationLog'
+                },
+                page: 1,
+                pageSize: 12,
+                searchFilter: {"id": "", "ip": "", event: "", "action": "", "data": "", "administrator_id": "", "administrator_name": "", "createdAt_range": ""},
+                columns: [
+                    {"sortable": "custom", "title": "Id", "key": "id", "width": 80},
+                    {"sortable": "custom", "title": "Event", "key": "event", "width": 110},
+                    {"sortable": "custom", "title": "IP地址", "key": "ip"},
+                    {"sortable": "custom", "title": "行为", "key": "action"},
+                    {
+                        "sortable": "custom", "title": "操作人", "key": "administrator_name", render: function (h, parmas) {
+                        return parmas.row.administrator_name + '(' + parmas.row.administrator_id + ')';
+                    }
+                    },
+                    {"sortable": "custom", "title": "创建时间", "key": "createdAt", "width": 160},
+                    {"sortable": "custom", "title": "更新时间", "key": "updatedAt", "width": 160},
+                    {
+                        title: '操作',
+                        width: 80,
+                        align: 'center',
+                        key: 'operation',
+                        fixed: 'right',
+                        render: function (h, params) {
+                            return h('Row', [
+                                h('Button', {
+                                    props: {
+                                        type: 'ghost',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: function () {
+                                            operationLog.displayPreview(params.row);
+                                        }
+                                    }
+                                }, '变更记录')
+                            ])
+                        }
+                    }
+                ]
+            },
+            mounted: function () {
+                this.setActiveMenu(["2", "30"]);
+            }
+        });
+
+    }());
+
+</script>

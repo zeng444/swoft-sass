@@ -1,0 +1,328 @@
+<Row class-name="layout-breadcrumb">
+    <Breadcrumb>
+        <Breadcrumb-item href="#">租客服务</Breadcrumb-item>
+        <Breadcrumb-item href="/tenant">租客列表</Breadcrumb-item>
+        <Breadcrumb-item>租客详情</Breadcrumb-item>
+    </Breadcrumb>
+</Row>
+
+<Row class-name="layout-content">
+
+    <i-col class-name="layout-form">
+        <Row class-name="layout-content-title">
+            <i-col span="12">
+                <h3>
+                    租客详情
+                </h3>
+            </i-col>
+            <i-col span="12" class-name="align-right">
+                <Button-group>
+                    <i-button icon="ios-arrow-back" v-on:click="location.href='/tenant'">返回</i-button>
+                </Button-group>
+            </i-col>
+        </Row>
+
+        <Row class-name="layout-content-form">
+            <i-col span="20">
+
+                <i-form ref="form" :model="formData"  label-width="90" label-position="left">
+
+                    <Row>
+                        <i-col span="8">
+                            <Form-item label="公司账号" >
+                                {{formData.name || '-' }}
+                            </Form-item>
+                        </i-col>
+
+                        <i-col span="8">
+                            <Form-item label="状态" >
+                                {{formData.isAvailable=='1' ? '可用':'不可用'}}
+                            </Form-item>
+                        </i-col>
+                        <i-col span="8">
+                            <Form-item label="联系电话" >
+                                {{formData.contact || '-' }}
+                            </Form-item>
+                        </i-col>
+                    </Row>
+                    <Row>
+                        <i-col span="8">
+                            <Form-item label="省份" >
+                                {{formData.province || '-' }}
+                            </Form-item>
+
+                        </i-col>
+                        <i-col span="8">
+                            <Form-item label="城市">
+                                {{formData.city || '-' }}
+                            </Form-item>
+                        </i-col>
+                        <i-col span="8">
+                            <Form-item label="联系人">
+                                {{formData.linkman || '-' }}
+                            </Form-item>
+                        </i-col>
+                    </Row>
+
+                    <Row>
+                        <i-col span="8">
+                            <Form-item label="有效期开始" >
+                                <Row>
+                                    <i-col span="11">
+                                        {{formData.beginAt || '-' }}
+                                    </i-col>
+                                </Row>
+                            </Form-item>
+                        </i-col>
+                        <i-col span="8">
+
+                            <Form-item label="有效期结束">
+                                <Row>
+                                    <i-col span="11">
+                                        {{formData.endAt || '-' }}
+                                    </i-col>
+                                </Row>
+                            </Form-item>
+                        </i-col>
+                        <i-col span="8">
+
+
+                        </i-col>
+                    </Row>
+
+                    <Row>
+                        <i-col span="8">
+                            <Form-item label="坐席数">
+                                {{formData.allowedUsers || '-' }}
+                            </Form-item>
+                        </i-col>
+                        <i-col span="8">
+
+                        </i-col>
+                        <i-col span="8">
+
+                        </i-col>
+                    </Row>
+
+
+                    <Row gutter="24" class-name="layout-content-title" style="margin-bottom: 32px;margin-top: 10px">
+                        <i-col span="12">
+                            <h3>超管信息</h3>
+                        </i-col>
+                    </Row>
+                    <Row>
+                        <i-col span="8">
+                            <Form-item label="平台账户">
+                                {{formData.account || '-' }}&nbsp;&nbsp; [<a href="javascript:void(0)" @click="openPostModal">重置密码</a>]
+                            </Form-item>
+                        </i-col>
+                        <i-col span="8">
+                            <Form-item label="平台密码">
+                                不可见
+                            </Form-item>
+                        </i-col>
+                    </Row>
+
+                    <Row gutter="24" class-name="layout-content-title" style="margin-bottom: 32px;margin-top: 10px">
+                        <i-col span="12">
+                            <h3>服务器信息</h3>
+                        </i-col>
+                    </Row>
+
+
+
+
+
+
+                    <Row>
+                        <i-col span="8">
+                            <Form-item label="服务器名">
+                                {{formData.serverModel.name || '-' }}
+                            </Form-item>
+                        </i-col>
+                        <i-col span="8">
+                            <Form-item label="服务器域名">
+                                {{formData.serverModel.domain || '-' }}
+                            </Form-item>
+                        </i-col>
+                        <i-col span="8">
+                            <Form-item label="服务器IP">
+                                {{formData.serverModel.ip || '-' }}
+                            </Form-item>
+                        </i-col>
+                    </Row>
+
+                    <Row gutter="24" class-name="layout-content-title" style="margin-bottom: 32px;margin-top: 10px">
+                        <i-col span="12">
+                            <h3>服务信息</h3>
+                        </i-col>
+                    </Row>
+
+
+                    <Row v-if="formData.serviceModel">
+                        <i-col span="8">
+                            <Form-item label="服务名">
+                                {{formData.serviceModel.name || '-' }}
+                            </Form-item>
+                        </i-col>
+                        <i-col span="8">
+                            <Form-item label="服务代号">
+                                {{formData.serviceModel.code || '-' }}
+                            </Form-item>
+                        </i-col>
+                        <i-col span="8">
+                            <Form-item label="服务地址">
+                                {{formData.serviceModel.host || '-' }}
+                            </Form-item>
+                        </i-col>
+                    </Row>
+
+
+
+
+
+
+                    <Row gutter="24" class-name="layout-content-title" style="margin-bottom: 32px;margin-top: 10px">
+                        <i-col span="12">
+                            <h3>数据库信息</h3>
+                        </i-col>
+                    </Row>
+
+                    <Row>
+                        <i-col span="8">
+                            <Form-item label="数据库">
+                                {{formData.dbName || '-' }}
+                            </Form-item>
+                        </i-col>
+                        <i-col span="8">
+                        </i-col>
+                        <i-col span="8">
+                        </i-col>
+                    </Row>
+
+                </i-form>
+
+            </i-col>
+
+        </Row>
+
+    </i-col>
+</Row>
+
+<template>
+    <Modal :mask-closable="false" width="500" ref="postPanel" v-model="showPost" title="创建内容"
+           @on-ok="handleSubmit('form2')"
+           @on-cancel="handleReset('form2')">
+        <i-form ref="form2" :model="formData2" :rules="validation2" label-width="90">
+
+
+            <Row>
+
+                    <Form-item label="密码" prop="password">
+
+                        <i-input v-model="formData2.password" placeholder="填写密码"></i-input>
+                    </Form-item>
+
+            </Row>
+
+
+        </i-form>
+        <div slot="footer">
+            <i-button type="ghost" @click="handleReset('form2')" style="margin-left: 8px">取消</i-button>
+            <i-button type="primary" @click="handleSubmit('form2')">提交</i-button>
+        </div>
+    </Modal>
+</template>
+
+
+
+
+<script>
+
+    (function () {
+        "use strict";
+        var tenant = new Janfish_DataPost({
+            el: "#app",
+            methods: {
+                afterLoad: function (data) {
+
+                    return data;
+                },
+                resetPassword: function (){
+
+                },
+                openPostModal: function () {
+                    this.showPost = true;
+                },
+                handleReset: function (name) {
+                    for (var i in this.formData2) {
+                        this.formData[i] = '';
+                    }
+                    if (this.showPost) {
+                        this.showPost = false;
+                    }
+                    this.formLoaded = false;
+                    this.$refs[name].resetFields();
+                },
+                handleSubmit: function (name) {
+                    var _this = this;
+                    if (_this.formLoaded === false) {
+                        return false;
+                    }
+                    _this.$refs[name].validate(function (valid) {
+                        if (valid) {
+                            _this.formData2.id=   _this.formData.id
+                            _this.$http.post(_this.api.post, qs.stringify(_this.formData2)).then(function (response) {
+                                if (response.status !== "success") {
+                                    _this.$Message.error(response.message);
+                                    return false;
+                                }
+                                _this.$Message.success('提交成功');
+                                _this.handleReset(name);
+                            });
+
+                        } else {
+                            _this.$Message.error('表单验证失败!');
+                        }
+                    });
+                },
+            },
+            data: {
+                validation2: {
+                    "password": [{"required": true, "message": "密码不能为空", "trigger": "blur"}, {
+                        "type": "string",
+                        "max": 30,
+                        "message": "密码不能为空1-30",
+                        "trigger": "blur"
+                    }],
+                },
+                showPost: false,  //控制快速编辑
+                formData2:{
+                    password:'',
+                },
+                formData: {
+
+                    serviceModel:{
+                        name:'',
+                        code:'',
+                        host:'',
+                    },
+                    serverModel:{
+                        name:'',
+                        doamin:'',
+                        ip:'',
+                    }
+                },
+                api: {
+                    post: '/tenant/view'
+                }
+            },
+            mounted: function () {
+                this.setActiveMenu(["37", "38"]);
+
+            }
+        })
+    }());
+
+
+</script>
