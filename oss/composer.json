@@ -1,0 +1,22 @@
+{
+  "name": "janfish/phalcon",
+  "version": "0.1",
+  "authors": [
+    {
+      "name": "Robert",
+      "email": "robert@janfish.cn"
+    }
+  ],
+  "description": "The Phalcon Framework.",
+  "keywords": [
+    "Phalcon"
+  ],
+  "require": {
+    "firebase/php-jwt": "^5.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Application\\Core\\Components\\": "core/components"
+    }
+  }
+}

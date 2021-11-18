@@ -1,0 +1,7 @@
+.idea
+.phalcon
+logs
+dev.php
+files
+user.config.php
+vendor

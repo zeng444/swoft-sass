@@ -1,0 +1,22 @@
+<?php
+return [
+    'image/jpeg' => '.jpeg',
+    'image/pjpeg' => '.jpeg',
+    'image/jpg' => '.jpeg',
+    'image/png' => '.png',
+    'image/x-png' => '.png',
+    'application/zip' => '.zip',
+    'application/x-rar' => '.rar',
+    'application/x-zip-compressed' => '.zip',
+    'application/pdf' => '.pdf',
+    'application/vnd.ms-powerpoint' => '.ppt',
+    'application/vnd.ms-excel' => '.xls',
+    'application/msword' => '.doc',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation' => '.pptx',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => '.xlsx',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => '.docx',
+    'application/x-gzip' => '.gz',
+    'image/gif' => '.gif',
+    'application/x-tar' => '.tar',
+    'text/csv' => '.csv',
+];
