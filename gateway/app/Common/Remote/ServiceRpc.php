@@ -2,6 +2,8 @@
 
 namespace App\Common\Remote;
 
+use App\Model\Entity\Service;
+use App\Model\Entity\TenantService;
 use App\Model\Logic\ServerLogic;
 use App\Model\Logic\ServiceLogic;
 use App\Rpc\Client\Contract\Balancer;
@@ -18,6 +20,29 @@ use Closure;
  */
 class ServiceRpc
 {
+
+    /**
+     * @param int $tenantId
+     * @return array
+     * @author Robert
+     */
+    private function getTenantService(int $tenantId): array
+    {
+        $tenantService = TenantService::where([
+            ["tenantId", '=', $tenantId]
+        ])->first(['serviceId', 'dbName']);
+        if (!$tenantService) {
+            throw new \RuntimeException('Can\'t match any service for the tenant');
+        }
+        $service = Service::find($tenantService->getServiceId());
+        if (!$service || $service->getIsAvailable() == 0) {
+            throw new \RuntimeException(sprintf('service [%s] is not available', $tenantService->getServiceId()));
+        }
+        return [
+            'serviceCode' => $service->getCode(),
+            'db' => $tenantService->getDbName(),
+        ];
+    }
     /**
      * @param Closure $callback
      * @param int|null $tenantId
@@ -27,7 +52,7 @@ class ServiceRpc
     public function handleOnTenant(Closure $callback, int $tenantId = null): array
     {
         if ($tenantId) {
-            $serviceInfo = \Swoft::getBean(ServiceLogic::class)->getTenantService($tenantId);
+            $serviceInfo = $this->getTenantService($tenantId);
             if (!$serviceInfo['db'] || !$serviceInfo['serviceCode']) {
                 throw new \RuntimeException('tenant id is not exist');
             }
