@@ -18,6 +18,24 @@ use Closure;
  */
 class ServiceRpc
 {
+    /**
+     * @param Closure $callback
+     * @param int|null $tenantId
+     * @return array
+     * @author Robert
+     */
+    public function handleOnTenant(Closure $callback, int $tenantId = null): array
+    {
+        if ($tenantId) {
+            $serviceInfo = \Swoft::getBean(ServiceLogic::class)->getTenantService($tenantId);
+            if (!$serviceInfo['db'] || !$serviceInfo['serviceCode']) {
+                throw new \RuntimeException('tenant id is not exist');
+            }
+            return $this->handle($callback, $serviceInfo['serviceCode'], $serviceInfo['db']);
+        } else {
+            return $this->handle($callback);
+        }
+    }
 
     /**
      * @param Closure $callback
