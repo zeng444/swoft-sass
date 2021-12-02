@@ -87,4 +87,16 @@ class AuthLogic implements AccountTypeInterface
         return true;
     }
 
+    /**
+     * Author:Robert
+     *
+     * @param int $userId
+     * @param string $currentRoute
+     * @return bool
+     */
+    public function allowedRoutes(int $userId, string $currentRoute): bool
+    {
+        return $this->userService->allowedRoutes($userId, $currentRoute);
+    }
+
 }

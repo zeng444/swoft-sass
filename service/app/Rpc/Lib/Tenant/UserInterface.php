@@ -107,4 +107,13 @@ interface UserInterface
      * @return array
      */
     public function permissions(int $userId): array;
+
+    /**
+     * Author:Robert
+     *
+     * @param int $userId
+     * @param string $currentRoute
+     * @return bool
+     */
+    public function allowedRoutes(int $userId, string $currentRoute): bool;
 }

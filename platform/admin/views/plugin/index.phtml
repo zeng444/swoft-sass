@@ -1,0 +1,205 @@
+<Row class-name="layout-breadcrumb">
+    <Breadcrumb>
+        <Breadcrumb-item href="#">租客服务</Breadcrumb-item>
+        <Breadcrumb-item href="/tenant/index">租客列表</Breadcrumb-item>
+        <Breadcrumb-item>租客 “{{info}}” 功能配置</Breadcrumb-item>
+    </Breadcrumb>
+</Row>
+
+
+<Row class-name="layout-content">
+    <i-col class-name="layout-data-list">
+
+        <Row class-name="layout-content-title">
+            <i-col span="12">
+                <h3>租客 “{{info}}” 功能配置</h3>
+            </i-col>
+            <i-col span="12" class-name="align-right">
+                <Button-group>
+                    <i-button icon="ios-arrow-back" v-on:click="location.href='/tenant'">返回</i-button>
+
+                </Button-group>
+
+            </i-col>
+        </Row>
+        <Row>
+            <Tree :data="data" show-checkbox multiple></Tree>
+        </Row>
+
+        <Row style="margin-top: 20px;padding-left: 50px">
+            <i-button type="primary" @click="submit">提交</i-button>
+        </Row>
+    </i-col>
+</Row>
+
+
+<template>
+    <Modal :mask-closable="false" width="50%" ref="postPanel" v-model="showPost" title="创建内容"
+           @on-ok="handleSubmit('form2')" @on-cancel="handleReset('form2')">
+        <i-form ref="form2" :model="formData" :rules="validation" label-width="140">
+            <Form-item label="服务器名" prop="name">
+                <i-input v-model="formData.name" placeholder="请输入"></i-input>
+            </Form-item>
+
+            <Form-item label="服务器域名" prop="domain">
+                <i-input v-model="formData.domain" placeholder="请输入"></i-input>
+            </Form-item>
+
+            <Form-item label="服务器IP" prop="ip">
+                <i-input v-model="formData.ip" placeholder="请输入"></i-input>
+            </Form-item>
+
+        </i-form>
+        <div slot="footer">
+            <i-button type="ghost" @click="handleReset('form2')" style="margin-left: 8px">取消</i-button>
+            <i-button type="primary" @click="handleSubmit('form2')">提交</i-button>
+        </div>
+    </Modal>
+</template>
+
+
+<script>
+    (function () {
+        "use strict";
+        var server = new Janfish_DataList({
+            el: "#app",
+            methods: {
+                submit: function () {
+                    var menuId = [], i, m, _this = this;
+                    for (i in this.data) {
+                        for (m in this.data[i]['children']) {
+                            if (this.data[i]['children'][m].checked) {
+                                menuId.push(this.data[i]['children'][m].id);
+                            }
+                        }
+                    }
+                    this.$http.post(_this.api.post, qs.stringify({
+                        id: _this.purl.param.id,
+                        menuId: menuId
+                    })).then(function (response) {
+                        if (response.status !== "success") {
+                            _this.$Message.error(response.message);
+                            return false;
+                        }
+                        _this.$Message.success('提交成功');
+                    });
+                },
+                beforePost: function (data) {
+                    data.id = this.purl.param.id
+                    return data;
+                },
+                afterDataLoad: function (data) {
+                    this.info = data.info;
+                    return data;
+                },
+                listPostData: function (data) {
+                    data.id = this.purl.param.id
+                    return data;
+                },
+            },
+            data: {
+                info: '',
+                validation: {
+                    "name": [{"required": true, "message": "服务器名不能为空", "trigger": "blur"}, {
+                        "type": "string",
+                        "max": 50,
+                        "message": "服务器名长度应该在1-50",
+                        "trigger": "blur"
+                    }],
+                    "domain": [{"type": "string", "max": 200, "message": "服务器域名长度应该在1-200", "trigger": "blur"}],
+                    "ip": [{"type": "string", "max": 20, "message": "服务器IP长度应该在1-20", "trigger": "blur"}]
+                },
+
+                api: {
+                    search: '/plugin',
+                    post: '/plugin/post',
+                },
+                page: 1,
+                pageSize: 12,
+                searchFilter: {"id": "", "name": "", "domain": "", "ip": "", "createdAt_range": ""},
+                columns: [
+
+                    {
+                        type: 'selection',
+                        width: 60,
+                        align: 'center',
+                        fixed: 'left'
+                    },
+
+                    {"sortable": "custom", "title": "Id", "key": "id", "width": 80},
+                    {
+                        "sortable": "custom", "title": "服务器名", "key": "name", render: function (h, params) {
+                            return params.row.name || '-'
+                        }
+                    },
+                    {
+                        "sortable": "custom", "title": "服务器域名", "key": "domain", render: function (h, params) {
+                            return params.row.domain || '-'
+                        }
+                    },
+                    {
+                        "sortable": "custom", "title": "服务器IP", "key": "ip", render: function (h, params) {
+                            return params.row.ip || '-'
+                        }
+                    },
+                    {
+                        "title": "服务数", "key": "serviceCount", render: function (h, params) {
+                            return params.row.serviceCount
+                        }
+                    },
+                    {
+                        "title": "数据库数", "key": "dbCount", render: function (h, params) {
+                            return params.row.dbCount
+                        }
+                    },
+
+                    {"sortable": "custom", "title": "创建时间", "key": "createdAt", "width": 160},
+                    {"sortable": "custom", "title": "更新时间", "key": "updatedAt", "width": 160},
+                    {
+                        title: '操作',
+                        width: 130,
+                        align: 'center',
+                        key: 'operation',
+                        fixed: 'right',
+                        render: function (h, params) {
+                            return h('Row', [
+                                h('Button', {
+                                    props: {
+                                        type: 'ghost',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '10px'
+                                    },
+                                    on: {
+                                        click: function () {
+                                            server.openPostModal(params.row.id)
+                                        }
+                                    }
+                                }, '编辑'),
+                                h('Button', {
+                                    props: {
+                                        type: 'ghost',
+                                        size: 'small'
+                                    },
+                                    style: {},
+                                    on: {
+                                        click: function () {
+                                            server.remove(params.row.id);
+                                        }
+                                    }
+                                }, '删除')
+                            ])
+                        }
+                    }
+
+                ]
+            },
+            mounted: function () {
+                this.setActiveMenu(["37", "38"]);
+            }
+        });
+
+    }());
+
+</script>

@@ -9,6 +9,7 @@ use App\Model\Entity\User;
 use App\Model\Entity\UserGroup;
 use App\Model\Entity\UserOrderAccount;
 use App\Model\Entity\UserRole;
+use App\Model\Entity\UserRoleRoute;
 use App\Model\Logic\SystemSettingLogic;
 use Swoft\Bean\Annotation\Mapping\Bean;
 use Swoft\Bean\Annotation\Mapping\Inject;
@@ -39,6 +40,24 @@ class UserLogic
      */
     protected $userGroupLogic;
 
+    /**
+     * 获取当前用户可访问的路由
+     * Author:Robert
+     *
+     * @param int $userId
+     * @param string $currentRoute
+     * @return bool
+     * @throws LogicException
+     */
+    public function allowedRoutes(int $userId, string $currentRoute): bool
+    {
+        $roleId = User::where('id', $userId)->value('roleId');
+        if (!$roleId) {
+            throw new LogicException('你的角色权限错误');
+        }
+        $routeId = UserRoleRoute::where([['userRoleId', $roleId], ['route', $currentRoute]])->value('id');
+        return !!$routeId;
+    }
 
     /**
      * 登录验证

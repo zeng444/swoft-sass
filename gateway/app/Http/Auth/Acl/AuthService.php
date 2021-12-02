@@ -6,6 +6,7 @@
 
 namespace App\Http\Auth\Acl;
 
+use App\Model\Logic\AuthLogic;
 use Swoft\Auth\AuthUserService;
 use Swoft\Auth\Contract\AuthServiceInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -54,7 +55,12 @@ class AuthService extends AuthUserService implements AuthServiceInterface
             return false;
         }
         $current = $matchedRoute->getMethod().':'.$matchedRoute->getPath();
-        //TODO 判断当前用户的路由是否在权限表
-        return true;
+        $routeIgnore = config('acl.ignore', []);
+        if (in_array($current, $routeIgnore)) {
+            return true;
+        }
+        /** @var AuthLogic $userLogic */
+        $userLogic = \Swoft::getBean(AuthLogic::class);
+        return session() && $userLogic->allowedRoutes(currentUserId(), $current);
     }
 }

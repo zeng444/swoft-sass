@@ -152,4 +152,18 @@ class UserService implements UserInterface
         $userLogic = \Swoft::getBean(UserLogic::class);
         return $userLogic->permissions($userId);
     }
+
+
+    /**
+     * Author:Robert
+     *
+     * @param int $userId
+     * @param string $currentRoute
+     * @return bool
+     * @throws LogicException
+     */
+    public function allowedRoutes(int $userId, string $currentRoute): bool
+    {
+        return $this->userLogic->allowedRoutes($userId, $currentRoute);
+    }
 }
