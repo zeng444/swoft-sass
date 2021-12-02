@@ -5,13 +5,10 @@ namespace App\Model\Logic\Manager;
 use App\Exception\LogicException;
 use App\Model\Entity\AclRoute;
 use App\Model\Constant\UserRole as UserRoleConstant;
-use App\Model\Entity\MessageStatistics;
-use App\Model\Entity\Tenant;
 use App\Model\Entity\User;
 use App\Model\Entity\UserRole;
 use App\Model\Entity\UserRoleRoute;
 use App\Model\Logic\SystemSettingLogic;
-use App\Model\Logic\Tenant\MessageStatisticsLogic;
 use Swoft\Bean\Annotation\Mapping\Bean;
 use Swoft\Db\DB;
 
@@ -38,7 +35,7 @@ class UserLogic
     public function resetSuperPassword(int $tenantId, string $password = ''): int
     {
         return User::where([['isSuper', 1], ['isDeleted', 0], ['tenantId', $tenantId]])->update([
-            'password' => $password
+            'password' => $password,
         ]);
     }
 
@@ -55,34 +52,29 @@ class UserLogic
      * @return array
      * @throws LogicException
      */
-    public function registerSuper(
-        int $tenantId,
-        string $account,
-        string $password = '',
-        string $mobile = '',
-        string $remark = '',
-        array $config = []
-    ): array {
+    public function registerSuper(int $tenantId, string $account, string $password = '', string $mobile = '', string $remark = '', array $config = []): array
+    {
         if (User::where([['isSuper', 1], ['isDeleted', 0], ['tenantId', $tenantId]])->useWritePdo()->first(['id'])) {
             throw new LogicException('OAA管理员已经注册');
         }
         $date = date('Y-m-d H:i:s');
-        $aclRoutes = AclRoute::where('tenantId', 0)->get(['route', 'key'])->toArray();
+        $aclRoutes = AclRoute::where('tenantId', 0)->get(['route', 'key', 'menuId'])->toArray();
         $password = $password ?: $this->generatePassword(8);
         $nickname = self::OAA_DEFAULT_NICKNAME;
         $userRole = UserRole::new();
+        $userRole->setIsSuper(1);
         $userRole->setTenantId($tenantId);
         $userRole->setIsDeleted(0);
         $userRole->setReader(UserRoleConstant::FULL_READER);
         $userRole->setName(self::OAA_ROLE_NAME);
         $userRole->setUsers(1);
         $userRole->setRemark($remark);
-
         $user = DB::transaction(static function () use ($userRole, $config, $tenantId, $account, $nickname, $mobile, $password, $remark, $date, $aclRoutes) {
 
             if (!$userRole->save()) {
                 throw new LogicException('创建角色失败');
             }
+
             if ($aclRoutes) {
                 $userRoleRouteData = [];
                 foreach ($aclRoutes as $route) {
@@ -114,7 +106,7 @@ class UserLogic
             if (!$user->save()) {
                 throw new LogicException('新增人员失败');
             }
-            if($config){
+            if ($config) {
                 (\Swoft::getBean(SystemSettingLogic::class))->initDefault([
                     'allowedUsers' => $config['allowedUsers'] ?? 1,
                 ], $tenantId);
@@ -144,9 +136,48 @@ class UserLogic
     private function generatePassword(int $length = 6): string
     {
         $dict = [
-            'A', 'C', 'D', 'J', 'K', '2', '3', '4', 'L', 'M', 'N', 'P', 'Q', 'R', 'S',
-            'T', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'm', 'n', 'o', 'p',
-            'q', 'r', 's', 't', '5', '6', 'E', 'F', 'G', 'H', '7', '9',
+            'A',
+            'C',
+            'D',
+            'J',
+            'K',
+            '2',
+            '3',
+            '4',
+            'L',
+            'M',
+            'N',
+            'P',
+            'Q',
+            'R',
+            'S',
+            'T',
+            'a',
+            'b',
+            'c',
+            'd',
+            'e',
+            'f',
+            'g',
+            'h',
+            'j',
+            'k',
+            'm',
+            'n',
+            'o',
+            'p',
+            'q',
+            'r',
+            's',
+            't',
+            '5',
+            '6',
+            'E',
+            'F',
+            'G',
+            'H',
+            '7',
+            '9',
         ];
         $indexes = array_rand($dict, $length);
         $str = '';

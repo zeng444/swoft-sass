@@ -10,8 +10,6 @@ use Application\Core\Models\Server;
 use Application\Core\Models\Service;
 use Application\Core\Models\ServiceDatabase;
 use App\Rpc\Lib\Manager\SystemSettingInterface;
-use Application\Core\Models\VoiceTemplate;
-use App\Rpc\Lib\Manager\VoiceStatisticsInterface;
 
 /**
  * Class TenantController
@@ -63,41 +61,6 @@ class TenantController extends ControllerBase
                 'count' => (string)Tenant::count($parameters),
             ]);
         }
-    }
-
-    /**
-     * 租客品牌编辑
-     */
-    public function brandpostAction()
-    {
-        if ($this->request->isAjax()) {
-
-            if ($this->request->isPost()) {
-                $id = $this->request->get('id');
-                $systemCode = $this->request->get('systemCode');
-                $proxy = $this->request->get('proxy');
-                $port = $this->request->get('port');
-                $this->getDI()->get('rpc')
-                    ->tenantDispatch((int)$id, \App\Rpc\Lib\Manager\BrandInterface::class, 'touch', [(int)$id, $systemCode, $proxy, $port]);
-                $this->apiSuccess([
-                    'success' => '1',
-                ]);
-            } else {
-                $id = $this->request->get('id');
-                $systemCode = $this->request->get('systemCode');
-                $rpc = $this->getDI()->get('rpc');
-                $this->apiSuccess([
-                    'data' => $id ? $rpc->tenantDispatch((int)$id, \App\Rpc\Lib\Manager\BrandInterface::class, 'info', [(int)$id, $systemCode]) : [
-                        'id' => '',
-                        'brand' => '',
-                        'port' => '',
-                        'proxy' => '',
-                        'systemCode' => '',
-                    ],
-                ]);
-            }
-        }
-
     }
 
 

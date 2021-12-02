@@ -29,23 +29,24 @@ class MenuLogic
     }
 
     /**
-     * System menu
+     * Author:Robert
+     *
+     * @param bool $isAll 管理端平台需要true，获得所有可选菜单
      * @return array
-     * @author Robert
      */
-    public function systemTree(): array
+    public function systemTree(bool $isAll = false): array
     {
+        $userMenuIds = $this->getTenantMenu();
         $menus = self::getChildNode();
         $data = [];
         foreach ($menus as $menu) {
-            //hack 2021-11-11暂时不开放数据解析权限，让管理员能看即可
-            if($menu['name']==='数据解析'){
-                continue;
-            }
             $item = $menu;
             $item['children'] = [];
             $children = self::getChildNode($menu['id']);
             foreach ($children as $child) {
+                if ($isAll===false && $userMenuIds && !in_array($child['id'], $userMenuIds)) {
+                    continue;
+                }
                 $item['children'][] = $child;
             }
             if ($item['children']) {
@@ -80,14 +81,14 @@ class MenuLogic
         $menus = self::getChildNode();
         $data = [];
         foreach ($menus as $menu) {
-            if ($userMenuIds && !in_array($menu['id'], $userMenuIds)) {
-                continue;
-            }
             $item = $menu;
             $item['children'] = [];
             $children = self::getChildNode($menu['id']);
             foreach ($children as $child) {
-                if (!$user || in_array($child['id'], $userRoleMenuIds) || $user->getIsSuper() === 1) {
+                if ($userMenuIds && !in_array($child['id'], $userMenuIds)) {
+                    continue;
+                }
+                if (!$user || in_array($child['id'], $userRoleMenuIds)) {
                     $item['children'][] = $child;
                 }
             }

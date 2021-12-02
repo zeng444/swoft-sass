@@ -246,7 +246,6 @@ class UserLogic
      * @param string $mobile
      * @param int $roleId
      * @param int|null $groupId
-     * @param array $orderAccounts
      * @param bool|null $isSuper
      * @return array
      * @throws LogicException
@@ -309,7 +308,6 @@ class UserLogic
      * @param string|null $mobile
      * @param int|null $roleId
      * @param int|null $groupId
-     * @param array $orderAccounts
      * @return array
      * @throws LogicException
      */

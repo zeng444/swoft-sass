@@ -47,14 +47,14 @@ class ServiceMiddleware implements MiddlewareInterface
     {
         $ext = $request->getExt();
         if (!isset($ext['appId']) || !$ext['appId']) {
-            throw new RpcServerException("Authentication failed", self::AUTH_ERROR_CODE);
+            throw new RpcServerException("Authentication failed 1", self::AUTH_ERROR_CODE);
         }
         if (!isset($ext['appSecret']) || !$ext['appSecret']) {
-            throw new RpcServerException("Authentication failed", self::AUTH_ERROR_CODE);
+            throw new RpcServerException("Authentication failed 2", self::AUTH_ERROR_CODE);
         }
         $password = config('rpc');
         if (!isset($password[$ext['appId']]) || $password[$ext['appId']] !== $ext['appSecret']) {
-            throw new RpcServerException("Authentication failed", self::AUTH_ERROR_CODE);
+            throw new RpcServerException("Authentication failed 3", self::AUTH_ERROR_CODE);
         }
         $db = $ext['db'] ?? '';
         $tenantId = intval($ext['tenantId'] ?? '');

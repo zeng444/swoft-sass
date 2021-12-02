@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.34, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.35, for Linux (x86_64)
 --
 -- Host: localhost    Database: sass_center
 -- ------------------------------------------------------
--- Server version	5.7.34-log
+-- Server version	5.7.35-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -125,7 +125,7 @@ CREATE TABLE `customer_manager` (
 
 LOCK TABLES `customer_manager` WRITE;
 /*!40000 ALTER TABLE `customer_manager` DISABLE KEYS */;
-INSERT INTO `customer_manager` VALUES (14,'','','2021-11-18 05:21:02','2021-11-18 05:30:43'),(15,'','','2021-11-18 07:18:25','2021-11-18 07:18:25');
+INSERT INTO `customer_manager` VALUES (1,'','','2021-12-02 14:11:17','2021-12-02 14:11:17');
 /*!40000 ALTER TABLE `customer_manager` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -147,7 +147,7 @@ CREATE TABLE `operation_log` (
   `createdAt` timestamp NULL DEFAULT NULL,
   `updatedAt` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=282 DEFAULT CHARSET=utf8mb4 COMMENT='操作日志';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='操作日志';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -156,7 +156,7 @@ CREATE TABLE `operation_log` (
 
 LOCK TABLES `operation_log` WRITE;
 /*!40000 ALTER TABLE `operation_log` DISABLE KEYS */;
-INSERT INTO `operation_log` VALUES (258,'CREATE','10.0.2.2','/server/post','{\"id\":\"1\",\"name\":\"rua\",\"domain\":\"cat.cn\",\"ip\":\"127.0.0.1\",\"createdAt\":\"2021-11-18 13:03:32\",\"updatedAt\":\"2021-11-18 13:03:32\"}','1','administrator','2021-11-18 05:03:32','2021-11-18 05:03:32'),(259,'CREATE','10.0.2.2','/service/post','{\"id\":\"1\",\"isAvailable\":\"1\",\"serverId\":\"1\",\"name\":\"sass-service\",\"code\":\"sass-service\",\"tag\":\"sass-service\",\"host\":\"sass-service:18306\",\"createdAt\":\"2021-11-18 13:04:10\",\"updatedAt\":\"2021-11-18 13:04:10\"}','1','administrator','2021-11-18 05:04:11','2021-11-18 05:04:11'),(260,'CREATE','10.0.2.2','/serviceDatabase/post','{\"id\":\"1\",\"serverId\":\"1\",\"serviceId\":\"1\",\"database\":\"sass\",\"createdAt\":\"2021-11-18 13:04:29\",\"updatedAt\":\"2021-11-18 13:04:29\"}','1','administrator','2021-11-18 05:04:29','2021-11-18 05:04:29'),(269,'UPDATE','10.0.2.2','/service/post','{\"id\":\"1\",\"isAvailable\":\"1\",\"serverId\":\"1\",\"name\":\"sass-service\",\"code\":\"sass-service\",\"tag\":\"sass-service\",\"host\":\"sass-service:18307\",\"createdAt\":\"2021-11-18 13:04:10\",\"updatedAt\":\"2021-11-18 13:13:19\"}','1','administrator','2021-11-18 05:13:19','2021-11-18 05:13:19'),(270,'CREATE','10.0.2.2','/tenant/post','{\"id\":\"9\",\"isAvailable\":\"1\",\"name\":\"oaa\",\"account\":\"admin\",\"province\":\"sichuan\",\"city\":\"chengdu\",\"linkman\":\"lianxiren\",\"contact\":\"18547852365\",\"beginAt\":\"2021-11-01 00:00:00\",\"endAt\":\"2021-11-30 00:00:00\",\"createdAt\":\"2021-11-18 13:14:05\",\"updatedAt\":\"2021-11-18 13:14:05\"}','1','administrator','2021-11-18 05:14:05','2021-11-18 05:14:05'),(273,'CREATE','10.0.2.2','/tenant/post','{\"id\":\"12\",\"isAvailable\":\"1\",\"name\":\"oaa234\",\"account\":\"admin\",\"province\":\"sichuan\",\"city\":\"chengdu\",\"linkman\":\"lianxiren\",\"contact\":\"18547852365\",\"beginAt\":\"2021-11-01 00:00:00\",\"endAt\":\"2021-11-30 00:00:00\",\"createdAt\":\"2021-11-18 13:18:14\",\"updatedAt\":\"2021-11-18 13:18:14\"}','1','administrator','2021-11-18 05:18:14','2021-11-18 05:18:14'),(275,'CREATE','10.0.2.2','/tenant/post','{\"id\":\"14\",\"isAvailable\":\"1\",\"name\":\"oaa23441\",\"account\":\"admin\",\"province\":\"sichuan\",\"city\":\"chengdu\",\"linkman\":\"lianxiren\",\"contact\":\"18547852365\",\"beginAt\":\"2021-11-01 00:00:00\",\"endAt\":\"2021-11-30 00:00:00\",\"createdAt\":\"2021-11-18 13:21:01\",\"updatedAt\":\"2021-11-18 13:21:01\"}','1','administrator','2021-11-18 05:21:01','2021-11-18 05:21:01'),(276,'UPDATE','10.0.2.2','/tenant/post','{\"id\":\"14\",\"isAvailable\":\"1\",\"name\":\"oaa23441\",\"account\":\"admin\",\"province\":\"sichuan\",\"city\":\"chengdu2\",\"linkman\":\"lianxiren\",\"contact\":\"18547852365\",\"beginAt\":\"2021-11-01 00:00:00\",\"endAt\":\"2021-11-30 00:00:00\",\"createdAt\":\"2021-11-18 13:21:01\",\"updatedAt\":\"2021-11-18 13:26:27\"}','1','administrator','2021-11-18 05:26:27','2021-11-18 05:26:27'),(277,'UPDATE','10.0.2.2','/tenant/post','{\"id\":\"14\",\"isAvailable\":\"1\",\"name\":\"oaa23441\",\"account\":\"admin\",\"province\":\"sichuan\",\"city\":\"chengdu21\",\"linkman\":\"lianxiren\",\"contact\":\"18547852365\",\"beginAt\":\"2021-11-01 00:00:00\",\"endAt\":\"2021-11-30 00:00:00\",\"createdAt\":\"2021-11-18 13:21:01\",\"updatedAt\":\"2021-11-18 13:26:34\"}','1','administrator','2021-11-18 05:26:34','2021-11-18 05:26:34'),(278,'UPDATE','10.0.2.2','/server/post','{\"id\":\"1\",\"name\":\"rua\",\"domain\":\"saas.cn\",\"ip\":\"127.0.0.1\",\"createdAt\":\"2021-11-18 13:03:32\",\"updatedAt\":\"2021-11-18 13:30:13\"}','1','administrator','2021-11-18 05:30:13','2021-11-18 05:30:13'),(279,'UPDATE','10.0.2.2','/tenant/post','{\"id\":\"14\",\"isAvailable\":\"0\",\"name\":\"oaa23441\",\"account\":\"admin\",\"province\":\"sichuan\",\"city\":\"chengdu21\",\"linkman\":\"lianxiren\",\"contact\":\"18547852365\",\"beginAt\":\"2021-11-01 00:00:00\",\"endAt\":\"2021-11-30 00:00:00\",\"createdAt\":\"2021-11-18 13:21:01\",\"updatedAt\":\"2021-11-18 13:30:41\"}','1','administrator','2021-11-18 05:30:41','2021-11-18 05:30:41'),(280,'UPDATE','10.0.2.2','/tenant/post','{\"id\":\"14\",\"isAvailable\":\"1\",\"name\":\"oaa23441\",\"account\":\"admin\",\"province\":\"sichuan\",\"city\":\"chengdu21\",\"linkman\":\"lianxiren\",\"contact\":\"18547852365\",\"beginAt\":\"2021-11-01 00:00:00\",\"endAt\":\"2021-11-30 00:00:00\",\"createdAt\":\"2021-11-18 13:21:01\",\"updatedAt\":\"2021-11-18 13:30:43\"}','1','administrator','2021-11-18 05:30:43','2021-11-18 05:30:43'),(281,'CREATE','10.0.2.2','/tenant/post','{\"id\":\"15\",\"isAvailable\":\"1\",\"name\":\"occ\",\"account\":\"admin\",\"province\":\"\",\"city\":\"\",\"linkman\":\"\",\"contact\":\"\",\"beginAt\":\"2021-11-01 00:00:00\",\"endAt\":\"2022-11-24 00:00:00\",\"createdAt\":\"2021-11-18 15:18:25\",\"updatedAt\":\"2021-11-18 15:18:25\"}','1','administrator','2021-11-18 07:18:25','2021-11-18 07:18:25');
+INSERT INTO `operation_log` VALUES (1,'CREATE','10.0.2.2','/tenant/post','{\"id\":\"1\",\"isAvailable\":\"1\",\"name\":\"janfish\",\"account\":\"admin\",\"province\":\"\",\"city\":\"\",\"linkman\":\"\",\"contact\":\"\",\"beginAt\":\"2021-12-01 00:00:00\",\"endAt\":\"2023-12-29 00:00:00\",\"createdAt\":\"2021-12-02 22:11:17\",\"updatedAt\":\"2021-12-02 22:11:17\"}','1','administrator','2021-12-02 14:11:17','2021-12-02 14:11:17');
 /*!40000 ALTER TABLE `operation_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -205,7 +205,7 @@ CREATE TABLE `server` (
   `createdAt` timestamp NULL DEFAULT NULL,
   `updatedAt` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -214,7 +214,7 @@ CREATE TABLE `server` (
 
 LOCK TABLES `server` WRITE;
 /*!40000 ALTER TABLE `server` DISABLE KEYS */;
-INSERT INTO `server` VALUES (1,'rua','sass.cn','127.0.0.1','2021-11-18 05:03:32','2021-11-18 05:30:13');
+INSERT INTO `server` VALUES (5,'dura','cat.cn','127.0.0.1','2021-12-02 12:24:51','2021-12-02 12:24:51');
 /*!40000 ALTER TABLE `server` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -236,7 +236,7 @@ CREATE TABLE `service` (
   `createdAt` timestamp NULL DEFAULT NULL,
   `updatedAt` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='服务列表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='服务列表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -245,7 +245,7 @@ CREATE TABLE `service` (
 
 LOCK TABLES `service` WRITE;
 /*!40000 ALTER TABLE `service` DISABLE KEYS */;
-INSERT INTO `service` VALUES (1,1,1,'sass-service','sass-service','sass-service','sass-service:18307','2021-11-18 05:04:10','2021-11-18 05:13:19');
+INSERT INTO `service` VALUES (2,1,5,'service-rosa','service-rosa',NULL,'sass-service:18307','2021-12-02 12:26:21','2021-12-02 12:28:13');
 /*!40000 ALTER TABLE `service` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -265,7 +265,7 @@ CREATE TABLE `service_database` (
   `updatedAt` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `database` (`database`,`serviceId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -274,7 +274,7 @@ CREATE TABLE `service_database` (
 
 LOCK TABLES `service_database` WRITE;
 /*!40000 ALTER TABLE `service_database` DISABLE KEYS */;
-INSERT INTO `service_database` VALUES (1,1,1,'sass','2021-11-18 05:04:29','2021-11-18 05:04:29');
+INSERT INTO `service_database` VALUES (2,5,2,'sass','2021-12-02 12:26:40','2021-12-02 12:26:40');
 /*!40000 ALTER TABLE `service_database` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -300,7 +300,7 @@ CREATE TABLE `tenant` (
   `updatedAt` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COMMENT='租客';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='租客';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -309,7 +309,7 @@ CREATE TABLE `tenant` (
 
 LOCK TABLES `tenant` WRITE;
 /*!40000 ALTER TABLE `tenant` DISABLE KEYS */;
-INSERT INTO `tenant` VALUES (9,1,'oaa','admin','sichuan','chengdu','lianxiren','18547852365','2021-10-31 16:00:00','2021-11-29 16:00:00','2021-11-18 05:14:05','2021-11-18 05:14:05'),(12,1,'oaa234','admin','sichuan','chengdu','lianxiren','18547852365','2021-10-31 16:00:00','2021-11-29 16:00:00','2021-11-18 05:18:14','2021-11-18 05:18:14'),(14,1,'oaa23441','admin','sichuan','chengdu21','lianxiren','18547852365','2021-10-31 16:00:00','2021-11-29 16:00:00','2021-11-18 05:21:01','2021-11-18 05:30:43'),(15,1,'occ','admin','','','','','2021-10-31 16:00:00','2022-11-23 16:00:00','2021-11-18 07:18:25','2021-11-18 07:18:25');
+INSERT INTO `tenant` VALUES (1,1,'janfish','admin','','','','','2021-11-30 16:00:00','2023-12-28 16:00:00','2021-12-02 14:11:17','2021-12-02 14:11:17');
 /*!40000 ALTER TABLE `tenant` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -362,7 +362,7 @@ CREATE TABLE `tenant_service` (
   `updatedAt` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `tenantId` (`tenantId`,`serviceId`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -371,7 +371,7 @@ CREATE TABLE `tenant_service` (
 
 LOCK TABLES `tenant_service` WRITE;
 /*!40000 ALTER TABLE `tenant_service` DISABLE KEYS */;
-INSERT INTO `tenant_service` VALUES (9,9,1,1,'sass','2021-11-18 05:14:05','2021-11-18 05:14:05'),(12,12,1,1,'sass','2021-11-18 05:18:14','2021-11-18 05:18:14'),(14,14,1,1,'sass','2021-11-18 05:21:01','2021-11-18 05:21:01'),(15,15,1,1,'sass','2021-11-18 07:18:25','2021-11-18 07:18:25');
+INSERT INTO `tenant_service` VALUES (1,1,5,2,'sass','2021-12-02 14:11:17','2021-12-02 14:11:17');
 /*!40000 ALTER TABLE `tenant_service` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -400,36 +400,7 @@ CREATE TABLE `version` (
 
 LOCK TABLES `version` WRITE;
 /*!40000 ALTER TABLE `version` DISABLE KEYS */;
-INSERT INTO `version` VALUES (5,1,'111','123123','23123','2021-10-20 04:10:19','2021-10-20 04:10:19'),(6,1,NULL,'sdfsdfs',NULL,'2021-10-20 04:16:19','2021-10-20 04:16:19'),(7,1,'123',NULL,'123','2021-10-20 04:17:00','2021-10-20 04:17:00');
 /*!40000 ALTER TABLE `version` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `voice_template`
---
-
-DROP TABLE IF EXISTS `voice_template`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `voice_template` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `tenants` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '使用商户数',
-  `code` varchar(64) NOT NULL COMMENT '模板号',
-  `content` varchar(500) DEFAULT NULL COMMENT '语音内容',
-  `createdAt` timestamp NULL DEFAULT NULL,
-  `updatedAt` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COMMENT='语音模板';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `voice_template`
---
-
-LOCK TABLES `voice_template` WRITE;
-/*!40000 ALTER TABLE `voice_template` DISABLE KEYS */;
-INSERT INTO `voice_template` VALUES (1,3,'453662','adsadsasdasdads','2021-11-01 03:51:42','2021-11-05 02:34:54'),(2,0,'45456456','234234234','2021-11-01 08:09:50','2021-11-01 08:09:50'),(3,0,'123123',NULL,'2021-11-05 02:38:39','2021-11-05 02:38:39'),(4,0,'dfgdfg',NULL,'2021-11-05 02:38:59','2021-11-05 02:38:59'),(5,0,'1231',NULL,'2021-11-05 02:39:05','2021-11-05 02:39:05'),(6,0,'123','123123','2021-11-05 02:40:23','2021-11-05 02:40:23'),(7,0,'123','123','2021-11-05 02:41:22','2021-11-05 02:41:22'),(8,0,'sdf sdf sdf ','123vdxvcxv s sd sdf','2021-11-05 02:42:33','2021-11-05 02:42:33'),(9,0,'11xxx11','123vdxvcxv s sd sdf','2021-11-05 02:42:46','2021-11-05 02:43:09'),(10,0,'2',NULL,'2021-11-05 02:43:27','2021-11-05 02:43:27'),(11,0,'123123',NULL,'2021-11-05 02:45:53','2021-11-05 02:45:53'),(12,0,'31231','123123','2021-11-05 03:51:37','2021-11-05 03:51:57'),(13,0,'111','123123xxxx','2021-11-05 03:52:06','2021-11-05 03:52:06'),(14,0,'R2','ad {{车牌号}}dddddddddd {{车主姓名}}','2021-11-05 04:30:52','2021-11-05 05:29:54'),(15,0,'Ro','123123{{车主姓名}}123132{{车牌号}}','2021-11-05 04:31:07','2021-11-05 05:23:07');
-/*!40000 ALTER TABLE `voice_template` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -441,4 +412,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-11-18 15:32:32
+-- Dump completed on 2021-12-02 22:13:41

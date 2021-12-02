@@ -18,11 +18,12 @@ try {
     /**
      * Read the configuration
      */
-    if ($env === 'dev') {
-        $config = include ROOT_PATH . "configs/dev.php";
-    } else {
-        $config = include ROOT_PATH . "configs/config.php";
-    }
+     $config = include ROOT_PATH . "configs/config.php";
+
+    /**
+     * Autoload Object
+     */
+    include_once ROOT_PATH . 'vendor/autoload.php';
 
     /**
      * Include Autoloader

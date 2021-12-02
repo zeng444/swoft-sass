@@ -37,6 +37,15 @@ class UserRole extends BaseEntity
      *
      * @var int
      */
+    private $isSuper;
+
+    /**
+     * 
+     *
+     * @Column()
+     *
+     * @var int
+     */
     private $isDeleted;
 
     /**
@@ -111,6 +120,18 @@ class UserRole extends BaseEntity
     public function setId(int $id): self
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @param int $isSuper
+     *
+     * @return self
+     */
+    public function setIsSuper(int $isSuper): self
+    {
+        $this->isSuper = $isSuper;
 
         return $this;
     }
@@ -215,7 +236,6 @@ class UserRole extends BaseEntity
      * @return int
      */
     public function getId(): ?int
-    
     {
         return $this->id;
     }
@@ -223,8 +243,15 @@ class UserRole extends BaseEntity
     /**
      * @return int
      */
+    public function getIsSuper(): ?int
+    {
+        return $this->isSuper;
+    }
+
+    /**
+     * @return int
+     */
     public function getIsDeleted(): ?int
-    
     {
         return $this->isDeleted;
     }
@@ -233,7 +260,6 @@ class UserRole extends BaseEntity
      * @return int
      */
     public function getTenantId(): ?int
-    
     {
         return $this->tenantId;
     }
@@ -242,7 +268,6 @@ class UserRole extends BaseEntity
      * @return string
      */
     public function getReader(): ?string
-    
     {
         return $this->reader;
     }
@@ -251,7 +276,6 @@ class UserRole extends BaseEntity
      * @return string
      */
     public function getName(): ?string
-    
     {
         return $this->name;
     }
@@ -260,7 +284,6 @@ class UserRole extends BaseEntity
      * @return int
      */
     public function getUsers(): ?int
-    
     {
         return $this->users;
     }
@@ -269,7 +292,6 @@ class UserRole extends BaseEntity
      * @return string|null
      */
     public function getRemark(): ?string
-    
     {
         return $this->remark;
     }
@@ -278,7 +300,6 @@ class UserRole extends BaseEntity
      * @return string|null
      */
     public function getCreatedAt(): ?string
-    
     {
         return $this->createdAt;
     }
@@ -287,9 +308,8 @@ class UserRole extends BaseEntity
      * @return string|null
      */
     public function getUpdatedAt(): ?string
-    
     {
         return $this->updatedAt;
-    }
+    }
 
 }

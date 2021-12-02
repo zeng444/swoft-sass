@@ -6,7 +6,7 @@ services:
 #    command: ["php","/var/www/swoft/bin/swoft","http:start"]
     command: ["php","./swoftcli.phar","run","-c","http:start"]
   #  command: "php -a"
-    tty: true
+   # tty: true
     container_name: sass
     environment:
       - APP_ENV=dev

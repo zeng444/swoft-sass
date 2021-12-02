@@ -23,72 +23,72 @@ class UserRoleLogic
 {
 
     /**
-     * 创建或修改角色
-     * Author:Robert
-     *
-     * @param int|null $roleId
+     * @param int $roleId
      * @param string $name
-     * @param array $routeKeys
+     * @param array $menuIds
      * @param string $reader
      * @param string $remark
      * @return array
-     * @throws Throwable
+     * @throws LogicException
+     * @author Robert
      */
-    public function touch(?int $roleId, string $name, array $routeKeys, string $reader, string $remark = ''): array
+    public function edit(int $roleId, string $name, array $menuIds, string $reader, string $remark = ''): array
     {
-        $userMenuIds = \Swoft::getBean(MenuLogic::class)->getTenantMenu();
         if (!in_array($reader, array_keys(\App\Model\Constant\UserRole::READER_MAP))) {
             throw new LogicException('不存在的reader');
         }
-        if ($roleId) {
-            $userRole = $this->getRoleById($roleId, ['id', 'reader', 'users', 'name', 'remark', 'createdAt', 'updatedAt']);
-            if (!$userRole) {
-                throw new LogicException('不存在的角色');
-            }
-        } else {
-            $userRole = UserRole::new();
+        $userRole = $this->getRoleById($roleId, ['id', 'isSuper', 'reader', 'users', 'name', 'remark', 'createdAt', 'updatedAt']);
+        if (!$userRole) {
+            throw new LogicException('不存在的角色');
         }
+        $isSuper = $userRole->getIsSuper() == 1;
+        $userMenuIds = \Swoft::getBean(MenuLogic::class)->getTenantMenu();
         $userRole->setName($name);
-        if(!$roleId){
-            $userRole->setIsDeleted(0);
-            $userRole->setUsers(0);
-        }
         $userRole->setReader($reader);
         $userRole->setRemark($remark);
-        //差集
-        $currentRoutes = UserRoleRoute::where('userRoleId', $roleId)->get(['id', 'key'])->toArray();
-        $diff = array_filter($currentRoutes, function ($item) use ($routeKeys) {
-            return !in_array($item['propertyKey'], $routeKeys);
-        });
-        $diff = array_column($diff, 'id');
-        $aclRoutes = AclRoute::whereIn('key', $routeKeys)->where('tenantId', 0)->get(['route', 'key','menuId'])->toArray();
+        if (!$isSuper) {
+            //差集
+            $menuIds = AclRoute::whereIn('menuId', $menuIds)->where('tenantId', 0)->get(['key'])->toArray();
+            $routeKeys = $menuIds ? array_column($menuIds, 'propertyKey') : [];
+            $currentRoutes = UserRoleRoute::where('userRoleId', $roleId)->get(['id', 'key'])->toArray();
+            $diff = array_filter($currentRoutes, function ($item) use ($routeKeys) {
+                return !in_array($item['propertyKey'], $routeKeys);
+            });
+            $diff = array_column($diff, 'id');
+            $aclRoutes = AclRoute::whereIn('key', $routeKeys)->where('tenantId', 0)->get(['route', 'key', 'menuId'])->toArray();
+        } else {
+            $aclRoutes = [];
+            $diff = [];
+        }
         $date = date('Y-m-d H:i:s');
         /** @var UserRole $userRole */
-        $userRole = DB::transaction(function () use ($userRole,$userMenuIds, $aclRoutes, $diff, $date) {
+        $userRole = DB::transaction(function () use ($isSuper, $userRole, $userMenuIds, $aclRoutes, $diff, $date) {
             if (!$userRole->save()) {
                 throw new LogicException('创建角色失败');
             }
-            if ($diff) {
-                if (!UserRoleRoute::whereIn('id', $diff)->delete()) {
-                    throw new LogicException('创建角色失败');
-                }
-            }
-            if($aclRoutes){
-                $userRoleRouteData = [];
-                foreach ($aclRoutes as $route) {
-                    if ($userMenuIds && !in_array($route['menuId'], $userMenuIds)) {
-                        continue;
+            if (!$isSuper) {
+                if ($diff) {
+                    if (!UserRoleRoute::whereIn('id', $diff)->delete()) {
+                        throw new LogicException('创建角色失败');
                     }
-                    $userRoleRouteData[] = [
-                        'userRoleId' => $userRole->getId(),
-                        'route' => $route['route'],
-                        'key' => $route['propertyKey'],
-                        'createdAt' => $date,
-                        'updatedAt' => $date,
-                    ];
                 }
-                if (!UserRoleRoute::insertOrUpdate($userRoleRouteData, true, ['createdAt'])) {
-                    throw new LogicException('创建角色失败');
+                if ($aclRoutes) {
+                    $userRoleRouteData = [];
+                    foreach ($aclRoutes as $route) {
+                        if ($userMenuIds && !in_array($route['menuId'], $userMenuIds)) {
+                            continue;
+                        }
+                        $userRoleRouteData[] = [
+                            'userRoleId' => $userRole->getId(),
+                            'route' => $route['route'],
+                            'key' => $route['propertyKey'],
+                            'createdAt' => $date,
+                            'updatedAt' => $date,
+                        ];
+                    }
+                    if (!UserRoleRoute::insertOrUpdate($userRoleRouteData, true, ['createdAt'])) {
+                        throw new LogicException('创建角色失败');
+                    }
                 }
             }
             return $userRole;
@@ -96,6 +96,83 @@ class UserRoleLogic
         $this->cleanRoleMenuCache($userRole->getId());
         return [
             'id' => $userRole->getId(),
+            'isSuper' => $userRole->getIsSuper(),
+            'reader' => $userRole->getReader(),
+            'users' => $userRole->getUsers(),
+            'name' => $userRole->getName(),
+            'remark' => $userRole->getRemark(),
+            'createdAt' => $userRole->getCreatedAt(),
+            'updatedAt' => $userRole->getUpdatedAt(),
+        ];
+    }
+
+    /**
+     * 创建或修改角色
+     * Author:Robert
+     *
+     * @param string $name
+     * @param array $menuIds
+     * @param string $reader
+     * @param string $remark
+     * @return array
+     * @throws Throwable
+     */
+    public function create(string $name, array $menuIds, string $reader, string $remark = ''): array
+    {
+        if (!in_array($reader, array_keys(\App\Model\Constant\UserRole::READER_MAP))) {
+            throw new LogicException('不存在的reader');
+        }
+        $userMenuIds = \Swoft::getBean(MenuLogic::class)->getTenantMenu();
+        $userRole = UserRole::new();
+        $userRole->setIsSuper(0);
+        $isSuper = $userRole->getIsSuper() == 1;
+        $userRole->setName($name);
+        $userRole->setIsDeleted(0);
+        $userRole->setUsers(0);
+        $userRole->setReader($reader);
+        $userRole->setRemark($remark);
+        if (!$isSuper) {
+            $menuIds = AclRoute::whereIn('menuId', $menuIds)->where('tenantId', 0)->get(['key'])->toArray();
+            if (!$menuIds) {
+                throw new LogicException('the menu has no route');
+            }
+            $routeKeys = array_column($menuIds, 'propertyKey');
+            $aclRoutes = AclRoute::whereIn('key', $routeKeys)->where('tenantId', 0)->get(['route', 'key', 'menuId'])->toArray();
+        } else {
+            $aclRoutes = [];
+        }
+        $date = date('Y-m-d H:i:s');
+        /** @var UserRole $userRole */
+        $userRole = DB::transaction(function () use ($isSuper, $userRole, $userMenuIds, $aclRoutes, $date) {
+            if (!$userRole->save()) {
+                throw new LogicException('创建角色失败');
+            }
+            if (!$isSuper) {
+                if ($aclRoutes) {
+                    $userRoleRouteData = [];
+                    foreach ($aclRoutes as $route) {
+                        if ($userMenuIds && !in_array($route['menuId'], $userMenuIds)) {
+                            continue;
+                        }
+                        $userRoleRouteData[] = [
+                            'userRoleId' => $userRole->getId(),
+                            'route' => $route['route'],
+                            'key' => $route['propertyKey'],
+                            'createdAt' => $date,
+                            'updatedAt' => $date,
+                        ];
+                    }
+                    if (!UserRoleRoute::insertOrUpdate($userRoleRouteData, true, ['createdAt'])) {
+                        throw new LogicException('创建角色失败');
+                    }
+                }
+            }
+            return $userRole;
+        });
+        $this->cleanRoleMenuCache($userRole->getId());
+        return [
+            'id' => $userRole->getId(),
+            'isSuper' => $userRole->getIsSuper(),
             'reader' => $userRole->getReader(),
             'users' => $userRole->getUsers(),
             'name' => $userRole->getName(),
@@ -113,9 +190,12 @@ class UserRoleLogic
      */
     public function remove(int $id): array
     {
-        $userRole = $this->getRoleById($id, ['id', 'reader', 'name', "users", 'remark', 'createdAt', 'updatedAt']);
+        $userRole = $this->getRoleById($id, ['id', 'reader', 'isSuper', 'name', "users", 'remark', 'createdAt', 'updatedAt']);
         if (!$userRole) {
             throw new LogicException('角色不存在');
+        }
+        if ($userRole->getIsSuper() == 1) {
+            throw new LogicException('超级管理角色无法删除');
         }
         $user = User::where('roleId', $id)->first(['id']);
         if ($user) {
@@ -168,7 +248,7 @@ class UserRoleLogic
      */
     public function info(int $id, array $columns = ['*'], bool $withRoutes = false): array
     {
-        $userRole = $this->getRoleById($id,$columns);
+        $userRole = $this->getRoleById($id, $columns);
         if (!$userRole) {
             throw new LogicException('角色不存在');
         }
@@ -196,7 +276,7 @@ class UserRoleLogic
      */
     private function generateRoleMenuCacheKey(int $roleId): string
     {
-        return env('APP_EN_NAME', 'saas') . 'userRoleMenu:' . $roleId;
+        return 'userRoleMenu:' . $roleId;
     }
 
     /**
@@ -207,7 +287,7 @@ class UserRoleLogic
      */
     public function increaseUsers(int $roleId): bool
     {
-        return UserRole::where([['id', $roleId], ['isDeleted', 0]])->increment('users',1) >0;
+        return UserRole::where([['id', $roleId], ['isDeleted', 0]])->increment('users', 1) > 0;
     }
 
     /**

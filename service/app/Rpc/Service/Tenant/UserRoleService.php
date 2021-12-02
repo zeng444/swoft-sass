@@ -38,12 +38,7 @@ class UserRoleService implements UserRoleInterface
      */
     public function create(string $name, array $menuIds, string $reader, string $remark = ''): array
     {
-        $menuIds = AclRoute::whereIn('menuId', $menuIds)->where('tenantId', 0)->get(['key'])->toArray();
-        if (!$menuIds) {
-            throw new LogicException('the menu has no route');
-        }
-        $routeKeys = array_column($menuIds, 'propertyKey');
-        return $this->userRoleLogic->touch(null, $name, $routeKeys, $reader, $remark);
+        return $this->userRoleLogic->create($name, $menuIds, $reader, $remark);
     }
 
     /**
@@ -59,13 +54,9 @@ class UserRoleService implements UserRoleInterface
      */
     public function edit(int $roleId, string $name, array $menuIds, string $reader, string $remark = ''): array
     {
-        $menuIds = AclRoute::whereIn('menuId', $menuIds)->where('tenantId', 0)->get(['key'])->toArray();
-        if (!$menuIds) {
-            throw new LogicException('the menu has no route');
-        }
-        $routeKeys = array_column($menuIds, 'propertyKey');
-        return $this->userRoleLogic->touch($roleId, $name, $routeKeys, $reader, $remark);
+        return $this->userRoleLogic->edit($roleId, $name, $menuIds, $reader, $remark);
     }
+
 
     /**
      * @param int $id

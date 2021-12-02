@@ -75,11 +75,11 @@ return [
         'middlewares' => [
             \App\Http\Middleware\FavIconMiddleware::class,
             \App\Http\Middleware\CrossMiddleware::class,
-            \App\Http\Middleware\AclMiddleware::class,
         ],
         'afterMiddlewares' => [
             \App\Http\Middleware\AfterAuthMiddleware::class,
             \Swoft\Http\Server\Middleware\ValidatorMiddleware::class,
+            \App\Http\Middleware\AclMiddleware::class,
         ]
     ],
     \Swoft\Auth\Contract\AuthManagerInterface::class => [
