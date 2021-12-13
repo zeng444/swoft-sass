@@ -3,11 +3,8 @@
 namespace App\Model\Logic\Tenant;
 
 use App\Exception\LogicException;
-use App\Model\Entity\Customer;
-use App\Model\Entity\OrderAccount;
 use App\Model\Entity\User;
 use App\Model\Entity\UserGroup;
-use App\Model\Entity\UserOrderAccount;
 use App\Model\Entity\UserRole;
 use App\Model\Entity\UserRoleRoute;
 use App\Model\Logic\SystemSettingLogic;
