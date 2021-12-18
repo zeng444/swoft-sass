@@ -63,6 +63,9 @@ class GroupLogic
         if (!$userGroup) {
             throw new LogicException('分组不存在');
         }
+        if ($userGroup->getUsers() > 0) {
+            throw new LogicException('请先删除分组下的用户，再删除分组');
+        }
         if (!$userGroup->delete()) {
             throw new LogicException('删除分组失败');
         }
