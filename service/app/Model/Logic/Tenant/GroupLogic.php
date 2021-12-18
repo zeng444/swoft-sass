@@ -3,7 +3,6 @@
 namespace App\Model\Logic\Tenant;
 
 use App\Exception\LogicException;
-use App\Model\Entity\Customer;
 use App\Model\Entity\User;
 use App\Model\Entity\UserGroup;
 use Swoft\Bean\Annotation\Mapping\Bean;

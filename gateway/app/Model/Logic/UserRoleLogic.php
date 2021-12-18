@@ -2,7 +2,6 @@
 
 namespace App\Model\Logic;
 
-use App\Model\Constant\UserRole;
 use App\Rpc\Lib\Tenant\UserRoleInterface;
 use Swoft\Bean\Annotation\Mapping\Bean;
 use Swoft\Rpc\Client\Annotation\Mapping\Reference;
