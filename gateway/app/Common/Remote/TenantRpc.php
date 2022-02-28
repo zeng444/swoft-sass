@@ -4,6 +4,7 @@ namespace App\Common\Remote;
 
 use App\Model\Entity\Service;
 use App\Model\Entity\TenantService;
+use App\Model\Logic\ServerLogic;
 use App\Rpc\Client\Contract\Balancer;
 use App\Rpc\Client\Contract\Extender;
 use Closure;
@@ -64,7 +65,14 @@ class TenantRpc
      */
     protected function getTenantService(): array
     {
-        return TenantService::where('tenantId', '>', 0)->get(['dbName', 'tenantId','serviceId'])->toArray();
+        /** @var ServerLogic $serverLogic */
+        $serverLogic = \Swoft::getBean(ServerLogic::class);
+        $server = $serverLogic->getCurrentServer(['id']);
+        if (!$server) {
+            throw new \RuntimeException('local server is not exits');
+        }
+        $tenantService = TenantService::where('serverId', $server['id'])->get(['dbName', 'tenantId', 'serviceId']);
+        return $tenantService ? $tenantService->toArray() : [];
     }
 
     /**
