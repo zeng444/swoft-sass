@@ -45,7 +45,11 @@ class SystemSettingLogic
         $tenantId = $tenantId ?: currentTenantId();
         SystemSetting::where('tenantId', $tenantId)->update([$key => $val]);
         $cacheKey = $this->settingCacheKey($tenantId);
-        Redis::hSet($cacheKey, $key, $val) && Redis::expire($cacheKey, self::SETTING_CACHE_EXPIRE);
+        if (Redis::exists($cacheKey)) {
+            Redis::hSet($cacheKey, $key, $val) && Redis::expire($cacheKey, self::SETTING_CACHE_EXPIRE);
+        } else {
+            $this->getAll($tenantId);
+        }
         return true;
     }
 
@@ -65,12 +69,8 @@ class SystemSettingLogic
         if (Redis::hExists($cacheKey, $key)) {
             return (string)Redis::hGet($cacheKey, $key);
         }
-        $val = SystemSetting::where('tenantId', $tenantId)->value($key);
-        if ($val === null) {
-            return $default;
-        }
-        Redis::hSet($cacheKey, $key, (string)$val) && Redis::expire($cacheKey, self::SETTING_CACHE_EXPIRE);
-        return (string)$val;
+        $config = $this->getAll($tenantId);
+        return (string)($config[$key] ?? $default);
     }
 
     /**
@@ -87,7 +87,8 @@ class SystemSettingLogic
         if($config){
             return $config;
         }
-        $config =  SystemSetting::where('tenantId', $tenantId)->first(['allowedUsers','dailySmsLimit','dailyVoiceLimit','voiceLoopTime'])->toArray();
+        $config =  SystemSetting::where('tenantId', $tenantId)->first(['allowedUsers','dailySmsLimit','dailyVoiceLimit','voiceLoopTime']);
+        $config = $config ? $config->toArray() : [];
         if ($config && (!Redis::hMSet($cacheKey, $config) || !Redis::expire($cacheKey, self::SETTING_CACHE_EXPIRE))) {
             throw new RuntimeException('设置变量失败');
         }
