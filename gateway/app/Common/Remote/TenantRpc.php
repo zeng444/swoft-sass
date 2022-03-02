@@ -42,6 +42,9 @@ class TenantRpc
         $extender = \Swoft::getBean(Extender::class);
         $originalExtData = $extender->getExtData();
         $services = $this->getTenantService($tenantId);
+        if(!$services){
+            throw new \RuntimeException('tenant is not exist');
+        }
         foreach ($services as $service) {
             if (!$tenantId || $tenantId === $service['tenantId']) {
                 $balancer->setHostName($this->getServiceCode($service['serviceId']));
