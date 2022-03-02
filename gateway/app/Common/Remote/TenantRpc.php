@@ -4,7 +4,6 @@ namespace App\Common\Remote;
 
 use App\Model\Entity\Service;
 use App\Model\Entity\TenantService;
-use App\Model\Logic\ServerLogic;
 use App\Rpc\Client\Contract\Balancer;
 use App\Rpc\Client\Contract\Extender;
 use Closure;
@@ -42,7 +41,7 @@ class TenantRpc
         /** @var Extender $extender */
         $extender = \Swoft::getBean(Extender::class);
         $originalExtData = $extender->getExtData();
-        $services = $this->getTenantService();
+        $services = $this->getTenantService($tenantId);
         foreach ($services as $service) {
             if (!$tenantId || $tenantId === $service['tenantId']) {
                 $balancer->setHostName($this->getServiceCode($service['serviceId']));
@@ -61,18 +60,19 @@ class TenantRpc
     /**
      * Author:Robert
      *
+     * @param int|null $tenantId
      * @return array
      */
-    protected function getTenantService(): array
+    protected function getTenantService(int $tenantId = null): array
     {
-        /** @var ServerLogic $serverLogic */
-        $serverLogic = \Swoft::getBean(ServerLogic::class);
-        $server = $serverLogic->getCurrentServer(['id']);
-        if (!$server) {
-            throw new \RuntimeException('local server is not exits');
+        $where = [];
+        if ($tenantId) {
+            $where[] = ['tenantId', $tenantId];
+        } else {
+            $where[] = ['tenantId', '>', 0];
         }
-        $tenantService = TenantService::where('serverId', $server['id'])->get(['dbName', 'tenantId', 'serviceId']);
-        return $tenantService ? $tenantService->toArray() : [];
+        $tenant = TenantService::where($where)->get(['dbName', 'tenantId', 'serviceId']);
+        return $tenant ? $tenant->toArray() : [];
     }
 
     /**
