@@ -74,8 +74,7 @@ class TenantRpc
         } else {
             $where[] = ['tenantId', '>', 0];
         }
-        $tenant = TenantService::where($where)->get(['dbName', 'tenantId', 'serviceId']);
-        return $tenant ? $tenant->toArray() : [];
+        return TenantService::where($where)->get(['dbName', 'tenantId', 'serviceId'])->toArray();
     }
 
     /**
