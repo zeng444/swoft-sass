@@ -282,7 +282,17 @@
                     sec = sec.toString().length < 2 ? '0' + sec : sec;
                     console.info(year + '-' + (month) + '-' + day + ' ' + hour + ':' + min + ":" + sec);
                     return year + '-' + (month) + '-' + day + ' ' + hour + ':' + min + ":" + sec;
-                }
+                },
+                modifyRemoteData: function (row) {
+                    var _this = this;
+                    _this.$http.post('/tenant/available', qs.stringify(row)).then(function (response) {
+                        if (response.status !== "success") {
+                            _this.$Message.error(response.message);
+                            return false;
+                        }
+                        _this.$Message.success('操作成功');
+                    });
+                },
             },
             data: {
                 showPost: false,

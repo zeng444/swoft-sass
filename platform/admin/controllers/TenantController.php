@@ -65,6 +65,37 @@ class TenantController extends ControllerBase
 
 
     /**
+     * 是否可用
+     */
+    public function availableAction()
+    {
+        if ($this->request->isAjax()) {
+            if ($this->request->isPost()) {
+                $postData = array_map(function ($val) {
+                    if (trim($val) === '') {
+                        $val = null;
+                    }
+                    return $val;
+                }, $_POST);
+
+                $model = Tenant::findFirst($postData['id']);
+                if (!$model) {
+                    $this->apiError('数据不存在');
+                }
+                $model->isAvailable = $postData['isAvailable'];
+                $model->addBehavior(new OperationLog(['id' => $this->adminInfo->id, 'name' => $this->adminInfo->name]));
+                if(!$model->save()){
+                    $this->apiError($model->getFirstError());
+                }
+                $this->apiSuccess([
+                    'success' => '1',
+                ]);
+            }
+        }
+    }
+
+
+    /**
      *  租客编辑添加
      */
     public function postAction()
