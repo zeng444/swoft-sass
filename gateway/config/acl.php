@@ -8,5 +8,6 @@ return [
         'GET:/menus',
         'GET:/versions',
         'GET:/systemMenus',
+        'GET:/selectorOptions',
     ]
 ];
