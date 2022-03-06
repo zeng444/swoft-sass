@@ -61,9 +61,9 @@ class UserRoleController
             $filter['name'] = $name;
         }
         if($request->getUriPath()==='/userRoleOptions'){
-            $columns = ['id', 'name'];
+            $columns = ['id', 'name', 'isSuper'];
         }else{
-            $columns = ['id', 'reader', 'name', 'users', 'remark', 'createdAt', 'updatedAt'];
+            $columns = ['id', 'reader', 'isSuper', 'name', 'users', 'remark', 'createdAt', 'updatedAt'];
         }
 
         $result = $this->userRoleLogic->list($filter, $columns, $page, $pageSize);
