@@ -173,7 +173,7 @@ class TenantController extends ControllerBase
                     $data['database'] = TenantService::getTenantDatabaseId($id) ?: '';
                     $serviceDatabase = ServiceDatabase::findFirst($data['database']);
                     $server = Server::findFirst($serviceDatabase->serverId);
-                    $service = Service::findFirst($serviceDatabase->serverId);
+                    $service = Service::findFirst($serviceDatabase->serviceId);
                     $data['databaseName'] = ($server ? $server->name : "") . " - " . ($service ? $service->name : '') . " - [" . ($serviceDatabase ? $serviceDatabase->database : "") . "]";
                     $setting = $this->getDI()->get('rpc')
                         ->tenantDispatch((int)$id, SystemSettingInterface::class, 'getAll', [(int)$id]);

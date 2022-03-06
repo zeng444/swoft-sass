@@ -1,0 +1,291 @@
+<Row class-name="layout-breadcrumb">
+    <Breadcrumb>
+        <Breadcrumb-item href="#">租客服务</Breadcrumb-item>
+        <Breadcrumb-item href="/tenant">租客列表</Breadcrumb-item>
+        <Breadcrumb-item><template v-if="isNew">创建</template><template v-else>编辑</template>租客</Breadcrumb-item>
+    </Breadcrumb>
+</Row>
+
+<Row class-name="layout-content">
+
+    <i-col class-name="layout-form">
+        <Row class-name="layout-content-title">
+            <i-col span="12">
+                <h3><template v-if="isNew">创建</template><template v-else>编辑</template>租客</h3>
+            </i-col>
+            <i-col span="12" class-name="align-right">
+                <Button-group>
+                    <i-button icon="ios-arrow-back" v-on:click="location.href='/tenant'">返回</i-button>
+                </Button-group>
+            </i-col>
+        </Row>
+
+        <Row class-name="layout-content-form">
+            <i-col span="24">
+
+                <i-form ref="form2" :model="formData" :rules="validation" label-width="90">
+
+                    <Row>
+                        <i-col span="24" style="margin: 0px 20px 20px 10px;font-weight:bold">
+                            基础信息
+                        </i-col>
+                    </Row>
+
+                    <Row>
+                        <i-col span="12">
+                            <Form-item label="公司名称" prop="name">
+                                <i-input v-model="formData.name" placeholder="用于登录的公司名称"></i-input>
+                            </Form-item>
+                        </i-col>
+                        <i-col span="12">
+                            <Form-item label="是否可用" prop="isAvailable">
+                                <i-switch :value="formData.isAvailable==1"
+                                          @on-change="function(status){ formData.isAvailable=status ? 1 : 0}"></i-switch>
+                            </Form-item>
+                        </i-col>
+                    </Row>
+
+
+                    <Row>
+                        <i-col span="12">
+                            <Form-item label="初始账号" prop="account" v-if="!formData.id">
+                                <i-input v-model="formData.account" placeholder="用于登录的账户"></i-input>
+                            </Form-item>
+                            <Form-item label="初始账号" v-else>
+                                {{formData.account}}
+                            </Form-item>
+                        </i-col>
+
+                        <i-col span="12">
+                            <Form-item label="初始密码" prop="password" v-if="!formData.id">
+                                <i-input v-model="formData.password" placeholder="用于登录的密码"></i-input>
+                            </Form-item>
+                            <Form-item label="初始密码" v-else>
+                                不可见
+                            </Form-item>
+                        </i-col>
+                    </Row>
+
+
+
+
+                    <Row>
+                        <i-col span="12">
+                            <Form-item label="省份" prop="province">
+                                <i-input v-model="formData.province" placeholder="请输入"></i-input>
+                            </Form-item>
+
+                        </i-col>
+                        <i-col span="12">
+                            <Form-item label="城市" prop="city">
+                                <i-input v-model="formData.city" placeholder="请输入"></i-input>
+                            </Form-item>
+                        </i-col>
+                    </Row>
+
+                    <Row>
+                        <i-col span="12">
+                            <Form-item label="联系人" prop="linkman">
+                                <i-input v-model="formData.linkman" placeholder="请输入"></i-input>
+                            </Form-item>
+                        </i-col>
+                        <i-col span="12">
+                            <Form-item label="联系电话" prop="contact">
+                                <i-input v-model="formData.contact" placeholder="请输入"></i-input>
+                            </Form-item>
+                        </i-col>
+                    </Row>
+
+                    <Row>
+                        <i-col span="12">
+                            <Form-item label="客服经理" prop="managerName">
+                                <i-input v-model="formData.managerName" placeholder="请输入"></i-input>
+                            </Form-item>
+                        </i-col>
+                        <i-col span="12">
+                            <Form-item label="客服电话" prop="managerMobile">
+                                <i-input v-model="formData.managerMobile" placeholder="请输入"></i-input>
+                            </Form-item>
+                        </i-col>
+                    </Row>
+
+
+
+                    <Row>
+                        <i-col span="24" style="margin: 0px 20px 20px 10px;font-weight:bold">
+                            授权信息
+                        </i-col>
+                    </Row>
+
+                    <Row>
+                        <i-col span="12">
+                            <Form-item label="有效期开始" prop="beginAt">
+                                <Row>
+                                    <i-col span="11">
+                                        <Date-picker type="datetime" placeholder="有效期开始"
+                                                     @on-change="formData.beginAt=$event"
+                                                     v-model="formData.beginAt"></Date-picker>
+                                    </i-col>
+                                </Row>
+                            </Form-item>
+                        </i-col>
+                        <i-col span="12">
+                            <Form-item label="有效期结束" prop="endAt">
+                                <Row>
+                                    <i-col span="11">
+                                        <Date-picker type="datetime" placeholder="有效期结束"
+                                                     @on-change="formData.endAt=$event" v-model="formData.endAt"></Date-picker>
+                                    </i-col>
+                                </Row>
+                            </Form-item>
+                        </i-col>
+                    </Row>
+
+
+
+                    <Row>
+                        <i-col span="12">
+                            <Form-item label="服务数据库" prop="database" v-if="!formData.id">
+                                <Row>
+                                    <i-col span="11">
+                                        <i-ajax-select url="/resource/database" attribute="name" v-model="formData.database"
+                                                       placeholder="服务数据库" :clearable="true"></i-ajax-select>
+                                    </i-col>
+                                </Row>
+                            </Form-item>
+                            <Form-item label="服务数据库" v-else="!formData.id">
+                                <Row>
+                                    <i-col span="11">
+                                        {{formData.databaseName}}
+                                    </i-col>
+
+                                </Row>
+                            </Form-item>
+                        </i-col>
+                        <i-col span="12">
+                            <Form-item label="座席数" prop="allowedUsers">
+                                <i-input v-model.number="formData.allowedUsers" placeholder="座席数"></i-input>
+                            </Form-item>
+
+                        </i-col>
+                    </Row>
+
+                    <Form-item>
+                        <i-button type="primary" @click="handleSubmit('form2')">提交</i-button>
+                    </Form-item>
+
+
+
+                </i-form>
+
+            </i-col>
+
+        </Row>
+
+    </i-col>
+</Row>
+<script>
+
+    (function () {
+        "use strict";
+
+        var service = new Janfish_DataPost({
+            el: "#app",
+            methods:{
+                beforePost: function (data) {
+                    if (typeof data.beginAt === 'object') {
+                        data.beginAt = this.formatDate(data.beginAt)
+                    }
+                    if (typeof data.endAt === 'object') {
+                        data.endAt = this.formatDate(data.endAt)
+                    }
+                    return data;
+                },
+                formatDate: function (date) {
+                    var year = date.getFullYear(), month = (date.getMonth() + 1), day = (date.getDate()),
+                        hour = date.getHours(), min = date.getMinutes(), sec = date.getSeconds();
+                    month = month.toString().length < 2 ? '0' + month : month;
+                    day = day.toString().length < 2 ? '0' + day : day;
+                    hour = hour.toString().length < 2 ? '0' + hour : hour;
+                    min = min.toString().length < 2 ? '0' + min : min;
+                    sec = sec.toString().length < 2 ? '0' + sec : sec;
+                    return year + '-' + (month) + '-' + day + ' ' + hour + ':' + min + ":" + sec;
+                },
+            },
+            data: {
+                validation: {
+                    "name": [{"required": true, "message": "公司名称不能为空", "trigger": "blur"}, {
+                        "type": "string",
+                        "max": 30,
+                        "message": "公司名称长度应该在1-30",
+                        "trigger": "blur"
+                    }],
+                    "account": [{"required": true, "message": "初始账号不能为空", "trigger": "blur"}, {
+                        "type": "string",
+                        "max": 30,
+                        "message": "初始账号长度应该在1-30",
+                        "trigger": "blur"
+                    }],
+                    "password": [{"required": true, "message": "初始密码不能为空", "trigger": "blur"}, {
+                        "type": "string",
+                        "max": 40,
+                        "message": "初始密码长度应该在1-40",
+                        "trigger": "blur"
+                    }],
+                    "allowedUsers":[{"required": true,"type": "integer", "message": "座席数格式错误", "trigger": "blur"}],
+                    "managerName":[{"required": false,"type": "string", "max": 40, "message": "客服经理长度应该在1-40", "trigger": "blur"}],
+                    "managerMobile":[{"required": false,"type": "string","max": 11,  "message": "客服电话长度应该在1-11", "trigger": "blur"}],
+                    "province": [{"type": "string", "max": 30, "message": "省份长度应该在1-30", "trigger": "blur"}],
+                    "city": [{"type": "string", "max": 30, "message": "城市长度应该在1-30", "trigger": "blur"}],
+                    "linkman": [{"type": "string", "max": 50, "message": "联系人长度应该在1-50", "trigger": "blur"}],
+                    "contact": [{"type": "string", "max": 20, "message": "联系电话长度应该在1-20", "trigger": "blur"}],
+                    "database": [{
+                        "required": true,
+                        "type": "string",
+                        "max": 20,
+                        "message": "服务数据库不能未空",
+                        "trigger": "blur"
+                    }],
+                    "beginAt": [
+                        {
+                            "required": true,
+                            "message": "有效期开始时间不能为空",
+                            "trigger": "blur",
+                            "validator": function (rule, value, callback) {
+                                if (!value) {
+                                    callback(new Error())
+                                } else {
+                                    callback()
+                                }
+                            }
+                        }
+                    ],
+                    "endAt": [
+                        {
+                            "required": true,
+                            "message": "有效期结束时间不能为空",
+                            "trigger": "blur",
+                            "validator": function (rule, value, callback) {
+                                if (!value) {
+                                    callback(new Error())
+                                } else {
+                                    callback()
+                                }
+                            }
+                        }
+                    ]
+                },
+                api: {
+                    post: '/tenant/post'
+                }
+            },
+            mounted: function () {
+                var _this = this;
+                this.setActiveMenu(["37", "38"]);
+
+            }
+        })
+    }());
+
+
+</script>
