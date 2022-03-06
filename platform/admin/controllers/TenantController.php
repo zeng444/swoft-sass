@@ -248,6 +248,11 @@ class TenantController extends ControllerBase
                 $setting = $this->getDI()->get('rpc')
                     ->tenantDispatch((int)$id, SystemSettingInterface::class, 'getAll', [(int)$id]);
                 $data['allowedUsers'] = $setting['allowedUsers'] ?? 0;
+
+                $adminInfo = $this->getDI()->get('rpc')
+                                  ->tenantDispatch((int)$id, UserInterface::class, 'superAdminInfo', [(int)$id, ['password']]);
+                $data['password'] =  $adminInfo['password'] ??'';
+
                 $this->apiSuccess([
                     'data' => $data,
                 ]);

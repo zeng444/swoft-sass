@@ -64,14 +64,12 @@ class UserService implements UserInterface
      * Author:Robert
      *
      * @param int $tenantId
-     * @param string $account
      * @param array|string[] $columns
      * @return array
-     * @throws LogicException
      */
-    public function info(int $tenantId, string $account, array $columns = ['*']): array
+    public function superAdminInfo(int $tenantId, array $columns=['*']): array
     {
-        return $this->userLogic->info($tenantId, $account, $columns);
+        return $this->userLogic->superAdminInfo($tenantId, $columns);
     }
 
 }

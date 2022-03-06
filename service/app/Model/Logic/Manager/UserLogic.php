@@ -40,6 +40,26 @@ class UserLogic
     }
 
     /**
+     * Author:Robert
+     *
+     * @param int $tenantId
+     * @param array|string[] $columns
+     * @return array
+     */
+    public function superAdminInfo(int $tenantId, array $columns=['*']): array
+    {
+        $user = User::where([['tenantId', $tenantId], ['isSuper', 1]])->first($columns);
+        if(!$user){
+            return [];
+        }
+        $result = $user->toArray();
+        if(in_array('password',$columns)){
+            $result['password'] = $user->getPassword();
+        }
+        return $result;
+    }
+
+    /**
      * 注册超管，开通企业时执行
      * Author:Robert
      *

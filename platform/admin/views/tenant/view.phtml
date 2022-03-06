@@ -113,12 +113,12 @@
                     <Row>
                         <i-col span="8">
                             <Form-item label="平台账户">
-                                {{formData.account || '-' }}&nbsp;&nbsp; [<a href="javascript:void(0)" @click="openPostModal">重置密码</a>]
+                                {{formData.account || '-' }}
                             </Form-item>
                         </i-col>
                         <i-col span="8">
                             <Form-item label="平台密码">
-                                不可见
+                                {{formData.password || '-' }}&nbsp;&nbsp;&nbsp; [<a href="javascript:void(0)" @click="openPostModal">重置密码</a>]
                             </Form-item>
                         </i-col>
                     </Row>
@@ -128,11 +128,6 @@
                             <h3>服务器信息</h3>
                         </i-col>
                     </Row>
-
-
-
-
-
 
                     <Row>
                         <i-col span="8">

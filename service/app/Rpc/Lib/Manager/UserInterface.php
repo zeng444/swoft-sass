@@ -44,9 +44,9 @@ interface UserInterface
      * Author:Robert
      *
      * @param int $tenantId
-     * @param string $account
      * @param array|string[] $columns
      * @return array
      */
-    public function info(int $tenantId, string $account, array $columns = ['*']): array;
+    public function superAdminInfo(int $tenantId, array $columns=['*']): array;
+
 }
