@@ -87,7 +87,7 @@ class SystemSettingLogic
         if($config){
             return $config;
         }
-        $config =  SystemSetting::where('tenantId', $tenantId)->first(['allowedUsers','dailySmsLimit','dailyVoiceLimit','voiceLoopTime']);
+        $config =  SystemSetting::where('tenantId', $tenantId)->first(['allowedUsers']);
         $config = $config ? $config->toArray() : [];
         if ($config && (!Redis::hMSet($cacheKey, $config) || !Redis::expire($cacheKey, self::SETTING_CACHE_EXPIRE))) {
             throw new RuntimeException('设置变量失败');
