@@ -85,8 +85,17 @@ class UserController
         ];
         $page = (int)$request->input('page', 1);
         $pageSize = (int)$request->input('pageSize', 20);
-        $withCustomerCount = (int)$request->input('withCustomerCount', 0);
-        $result = $this->userLogic->list($filter, ['id', 'account', 'nickname', 'mobile'], $page, $pageSize, false,$withCustomerCount==1);
+        if (in_array($request->getUriPath(), [
+            '/userOptions',
+        ])) {
+            $withCustomerCount = (int)$request->input('withCustomerCount', 0);
+            $result = $this->userLogic->list($filter, ['id', 'account', 'nickname', 'mobile'], $page, $pageSize, false,$withCustomerCount==1);
+        }else{
+            if (!currentIsSuper()) {
+                $filter['id'] = currentUserId();
+            }
+            $result = $this->userLogic->list($filter, ['id', 'isAvailable', 'isSuper', 'account', 'nickname', 'mobile', 'roleId', 'groupId', 'createdAt'], $page, $pageSize,true,true);
+        }
         return $this->apiResponse->success($result);
     }
 
@@ -177,6 +186,19 @@ class UserController
         if (!currentIsSuper() && $userId !== currentUserId()) {
             throw new LogicException('您没有权限');
         }
-        return $this->apiResponse->success($this->userLogic->info($userId, ['*'], true));
+        $columns = [
+            'id',
+            'isAvailable',
+            'isSuper',
+            'account',
+            'nickname',
+            'mobile',
+            'roleId',
+            'groupId',
+            'latestLoginAt',
+            'createdAt',
+            'updatedAt',
+        ];
+        return $this->apiResponse->success($this->userLogic->info($userId, $columns, true));
     }
 }

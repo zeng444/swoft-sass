@@ -282,6 +282,28 @@ class UserLogic
             'groupId' => $groupId,
         ];
         $user = User::new($insert);
+        $userRoleLogic = $this->userRoleLogic;
+        $userGroupLogic = $this->userGroupLogic;
+        $user = DB::transaction(static function () use (
+            $user,
+            $nickname,
+            $userRoleLogic,
+            $userGroupLogic
+        ) {
+            if (!$user->save()) {
+                throw new LogicException('新增人员失败');
+            }
+            if ($user->getRoleId() && !$userRoleLogic->increaseUsers($user->getRoleId())) {
+                throw new LogicException('新增人员失败');
+            }
+            if ($user->getGroupId() && !$userGroupLogic->increaseUsers($user->getGroupId())) {
+                throw new LogicException('新增人员失败');
+            }
+            if (!$user->save()) {
+                throw new LogicException('更新用户坐席失败');
+            }
+            return $user;
+        });
         return [
             'id' => $user->getId(),
             'isSuper' => $user->getIsSuper(),
