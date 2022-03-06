@@ -60,7 +60,6 @@ class UserService implements UserInterface
      * @param string $mobile
      * @param int $roleId
      * @param int|null $groupId
-     * @param array $orderAccountIds
      * @return array
      * @throws Throwable
      * @author Robert

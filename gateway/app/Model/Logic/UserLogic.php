@@ -32,7 +32,6 @@ class UserLogic
      * @param string $mobile
      * @param int $roleId
      * @param int|null $groupId
-     * @param array $orderAccountIds
      * @return array
      * @throws Throwable
      */
@@ -42,11 +41,9 @@ class UserLogic
         string $nickname,
         string $mobile,
         int $roleId,
-        int $groupId = null,
-        array $orderAccountIds = []
+        int $groupId = null
     ): array {
-        return $this->userService->register($account, $password, $nickname, $mobile, $roleId, $groupId,
-            $orderAccountIds);
+        return $this->userService->register($account, $password, $nickname, $mobile, $roleId, $groupId);
     }
 
     /**
@@ -59,7 +56,6 @@ class UserLogic
      * @param string|null $mobile
      * @param int|null $roleId
      * @param int|null $groupId
-     * @param array $orderAccountIds
      * @return array
      */
     public function edit(
@@ -69,11 +65,9 @@ class UserLogic
         string $nickname = null,
         string $mobile = null,
         int $roleId = null,
-        int $groupId = null,
-        array $orderAccountIds = []
+        int $groupId = null
     ): array {
-        return $this->userService->edit($id, $account, $password, $nickname, $mobile, $roleId, $groupId,
-            $orderAccountIds);
+        return $this->userService->edit($id, $account, $password, $nickname, $mobile, $roleId, $groupId);
     }
 
     /**
@@ -96,13 +90,11 @@ class UserLogic
      * @param array|string[] $columns
      * @param int $page
      * @param int $pageSize
-     * @param bool $withOrderAccount
-     * @param bool $withCustomerCount
      * @return array
      */
-    public function list(array $filter, array $columns = ['*'], int $page = 1, int $pageSize = 20, bool $withOrderAccount = true, bool $withCustomerCount = true): array
+    public function list(array $filter, array $columns = ['*'], int $page = 1, int $pageSize = 20): array
     {
-        return $this->userService->list($filter, $columns, $page, $pageSize, $withOrderAccount, $withCustomerCount);
+        return $this->userService->list($filter, $columns, $page, $pageSize);
     }
 
 
@@ -122,12 +114,11 @@ class UserLogic
      *
      * @param int $userId
      * @param array|string[] $columns
-     * @param bool $withOrderAccount
      * @return array
      */
-    public function info(int $userId, array $columns = ['*'], bool $withOrderAccount = false): array
+    public function info(int $userId, array $columns = ['*']): array
     {
-        return $this->userService->info($userId, $columns, $withOrderAccount);
+        return $this->userService->info($userId, $columns);
     }
 
     /**

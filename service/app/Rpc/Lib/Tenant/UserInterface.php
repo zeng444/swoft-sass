@@ -49,7 +49,6 @@ interface UserInterface
      * @param string|null $mobile
      * @param int|null $roleId
      * @param int|null $groupId
-     * @param array $orderAccountIds
      * @return array
      */
     public function edit(
