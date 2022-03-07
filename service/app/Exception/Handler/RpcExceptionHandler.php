@@ -12,7 +12,6 @@ namespace App\Exception\Handler;
 
 use Swoft\Db\Exception\DbException;
 use Swoft\Error\Annotation\Mapping\ExceptionHandler;
-use Swoft\Log\Debug;
 use Swoft\Log\Helper\CLog;
 use Swoft\Rpc\Error;
 use Swoft\Rpc\Server\Exception\Handler\RpcErrorHandler;
