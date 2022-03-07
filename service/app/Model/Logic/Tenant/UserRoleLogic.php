@@ -272,12 +272,14 @@ class UserRoleLogic
      * Author:Robert
      *
      * @param int $roleId
+     * @param int $tenantId
      * @return string
      */
-    private function generateRoleMenuCacheKey(int $roleId): string
+    private function generateRoleMenuCacheKey(int $roleId, int $tenantId): string
     {
-        return 'userRoleMenu:' . $roleId;
+        return 'userRoleMenu:'.$tenantId.':'.$roleId;
     }
+
 
     /**
      * Author:Robert
@@ -305,11 +307,13 @@ class UserRoleLogic
      * Author:Robert
      *
      * @param int $roleId
+     * @param int|null $tenantId
      * @return array|null
      */
-    public function getRoleMenuCache(int $roleId): ?array
+    public function getRoleMenuCache(int $roleId, int $tenantId = null): ?array
     {
-        $cache = Redis::get($this->generateRoleMenuCacheKey($roleId)) ?: null;
+        $tenantId = $tenantId ?: currentTenantId();
+        $cache = Redis::get($this->generateRoleMenuCacheKey($roleId, $tenantId)) ?: null;
         return $cache ? unserialize($cache) : $cache;
     }
 
@@ -319,21 +323,25 @@ class UserRoleLogic
      * @param int $roleId
      * @param array $menuIds
      * @param int $ttl
+     * @param int|null $tenantId
      */
-    public function setRoleMenuCache(int $roleId, array $menuIds, int $ttl = 86400)
+    public function setRoleMenuCache(int $roleId, array $menuIds, int $ttl = 86400, int $tenantId = null)
     {
-        Redis::setex($this->generateRoleMenuCacheKey($roleId), 86400, serialize($menuIds));
+        $tenantId = $tenantId ?: currentTenantId();
+        Redis::setex($this->generateRoleMenuCacheKey($roleId, $tenantId), $ttl, serialize($menuIds));
     }
 
     /**
      * Author:Robert
      *
      * @param int $roleId
+     * @param int|null $tenantId
      * @return int
      */
-    public function cleanRoleMenuCache(int $roleId): int
+    public function cleanRoleMenuCache(int $roleId, int $tenantId = null): int
     {
-        return Redis::del($this->generateRoleMenuCacheKey($roleId));
+        $tenantId = $tenantId ?: currentTenantId();
+        return Redis::del($this->generateRoleMenuCacheKey($roleId, $tenantId));
     }
 
     /**
