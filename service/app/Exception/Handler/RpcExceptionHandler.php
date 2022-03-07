@@ -10,8 +10,10 @@
 
 namespace App\Exception\Handler;
 
+use Swoft\Db\Exception\DbException;
 use Swoft\Error\Annotation\Mapping\ExceptionHandler;
 use Swoft\Log\Debug;
+use Swoft\Log\Helper\CLog;
 use Swoft\Rpc\Error;
 use Swoft\Rpc\Server\Exception\Handler\RpcErrorHandler;
 use Swoft\Rpc\Server\Response;
@@ -37,13 +39,16 @@ class RpcExceptionHandler extends RpcErrorHandler
         // Debug is false
         if (!APP_DEBUG) {
             // just show error message
-            $error = Error::new($e->getCode(), $e->getMessage(), null);
+            if ($e instanceof DbException) {
+                $error   = Error::new($e->getCode(), '系统错误，请联系管理员', null);
+            }else{
+                $error = Error::new($e->getCode(), $e->getMessage(), null);
+            }
         } else {
             $message = sprintf(' %s At %s line %d', $e->getMessage(), $e->getFile(), $e->getLine());
-            $error   = Error::new($e->getCode(), $message, null);
+            $error = Error::new($e->getCode(), $message, null);
         }
-
-        Debug::log('Rpc server error(%s)', $e->getMessage());
+        CLog::info('Rpc server error(%s)', $e->getMessage().$e->getTraceAsString());
 
         $response->setError($error);
 
