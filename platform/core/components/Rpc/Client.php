@@ -117,6 +117,7 @@ class Client implements InjectionAwareInterface
         if (!$service) {
             throw new \Exception('服务不存在');
         }
+        $this->tenantId = $tenantId;
         return $this->dispatch($service->host, $tenantService->dbName, $class, $method, $param, $version);
     }
 
@@ -135,7 +136,6 @@ class Client implements InjectionAwareInterface
     {
         $this->host = $host;
         $this->db = $db;
-        $this->tenantId = 0;
         $result = $this->request($class, $method, $param, [
             'appId' => $this->appId,
             'appSecret' => $this->appSecret,
