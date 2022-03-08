@@ -11,7 +11,7 @@ $loader->registerDirs(
 $loader->registerNamespaces([
     'Application\Core\Model' => CORE_PATH . 'models/',
     'Application\Core\Components' => CORE_PATH . 'components/',
-    'Application\Admin\Components' => ADMIN_PATH . 'components/',s
+    'Application\Admin\Components' => ADMIN_PATH . 'components/',
 ]);
 $loader->register();
 
