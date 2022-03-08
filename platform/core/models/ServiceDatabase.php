@@ -212,4 +212,29 @@ class ServiceDatabase extends BaseModel
         return parent::findFirst($parameters);
     }
 
+    /**
+     * Author:Robert
+     *
+     * @return int
+     */
+    public static function automaticSelectDb(): int
+    {
+        $sql = "SELECT  dbName,COUNT(*) AS `quantity` FROM `tenant_service` GROUP BY dbName ORDER BY quantity ASC limit 1";
+        $self = new self();
+        $db = $self->getWriteConnection();
+        $result = $db->fetchOne($sql);
+        if(!$result){
+            return 0;
+        }
+        $serviceDatabase = ServiceDatabase::findFirst([
+            'conditions'=>'database = :database:',
+            'bind'=>[
+                'database'=>$result['dbName']
+            ]
+        ]);
+        if(!$serviceDatabase){
+            return 0;
+        }
+        return $serviceDatabase->id;
+    }
 }

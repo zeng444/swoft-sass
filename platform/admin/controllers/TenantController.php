@@ -94,6 +94,23 @@ class TenantController extends ControllerBase
         }
     }
 
+    /**
+     * 推荐数据库
+     */
+    public function databaseAction()
+    {
+        if ($this->request->isAjax()) {
+            if ($this->request->isPost()) {
+                $databaseId = ServiceDatabase::automaticSelectDb();
+                if ($databaseId <= 0) {
+                    $this->apiError('暂无数据库配置，无法自动推荐');
+                }
+                $this->apiSuccess([
+                    'data' => $databaseId,
+                ]);
+            }
+        }
+    }
 
     /**
      *  租客编辑添加

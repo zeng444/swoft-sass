@@ -147,9 +147,13 @@
                         <i-col span="12">
                             <Form-item label="服务数据库" prop="database" v-if="!formData.id">
                                 <Row>
-                                    <i-col span="11">
-                                        <i-ajax-select url="/resource/database" attribute="name" v-model="formData.database"
+                                    <i-col span="6">
+                                        <i-ajax-select url="/resource/database" attribute="name"
+                                                       v-model="formData.database"
                                                        placeholder="服务数据库" :clearable="true"></i-ajax-select>
+                                    </i-col>
+                                    <i-col span="6">
+                                        &nbsp;&nbsp;<a href="javascript:void(0)" @click="database">[自动推荐数据库]</a>
                                     </i-col>
                                 </Row>
                             </Form-item>
@@ -211,6 +215,16 @@
                     sec = sec.toString().length < 2 ? '0' + sec : sec;
                     return year + '-' + (month) + '-' + day + ' ' + hour + ':' + min + ":" + sec;
                 },
+                database:function (){
+                    var _this = this;
+                    _this.$http.post('/tenant/database', qs.stringify(_this.beforePost(_this.formData))).then(function (response) {
+                        if (response.status !== "success") {
+                            _this.$Message.error(response.message);
+                            return false;
+                        }
+                        _this.formData.database = response.data.data
+                    });
+                }
             },
             data: {
                 validation: {
