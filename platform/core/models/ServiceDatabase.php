@@ -219,7 +219,19 @@ class ServiceDatabase extends BaseModel
      */
     public static function automaticSelectDb(): int
     {
-        $sql = "SELECT  dbName,COUNT(*) AS `quantity` FROM `tenant_service` GROUP BY dbName ORDER BY quantity ASC limit 1";
+        $sql = "SELECT 
+                  dbName,
+                  COUNT(*) AS `quantity` 
+                FROM
+                  (SELECT 
+                    tenant_service.*,
+                    tenant.isAvailable 
+                  FROM
+                    `tenant` 
+                    INNER JOIN `tenant_service` 
+                      ON `tenant`.id = tenant_service.`tenantId` 
+                  HAVING `tenant`.`isAvailable` = 1) AS t 
+                GROUP BY dbName ORDER BY `quantity`  ASC limit 1";
         $self = new self();
         $db = $self->getWriteConnection();
         $result = $db->fetchOne($sql);
