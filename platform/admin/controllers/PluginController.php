@@ -33,7 +33,7 @@ class PluginController extends ControllerBase
                     unset($item['name']);
                     foreach ($item['children'] as &$it){
                         $it['title'] = $it['name'];
-                        $it['checked'] = $it['selected'] ==1;
+                        $it['checked'] = isset($it['selected']) && $it['selected'] == 1;
                         unset($it['name']);
                     }
                 }
