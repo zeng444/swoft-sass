@@ -58,9 +58,9 @@ return [
         ],
         /* @see HttpServer::$setting */
         'setting' => [
-            'task_worker_num' => env('HTTP_TASK_WORK_NUMBER', 1),
+            'task_worker_num' => 1,
             'task_enable_coroutine' => true,
-            'worker_num' => env('HTTP_WORK_NUMBER', 2),
+            'worker_num' => 2,
             // static handle
             // 'enable_static_handler'    => true,
             // 'document_root'            => dirname(__DIR__) . '/public',
@@ -137,8 +137,8 @@ return [
             SwooleEvent::FINISH => \bean(FinishListener::class)
         ],
         'setting' => [
-            'task_worker_num' => env('HTTP_TASK_WORK_NUMBER', 1),
-            'worker_num' => env('HTTP_WORK_NUMBER', 2),
+            'task_worker_num' => env('RPC_TASK_WORK_NUMBER', 3),
+            'worker_num' => env('RPC_WORK_NUMBER', 2),
             'task_enable_coroutine' => true,
             'buffer_output_size' => 20 * 1024 * 1024,
             'package_max_length' => 20 * 1024 * 1024,
