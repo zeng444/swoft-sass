@@ -178,7 +178,7 @@ class Client implements InjectionAwareInterface
         fwrite($fp, $data);
         $result = '';
         while (!feof($fp)) {
-            $tmp = stream_socket_recvfrom($fp, 1024);
+            $tmp = stream_socket_recvfrom($fp, 10240);
             if ($pos = strpos($tmp, self::RPC_EOL)) {
                 $result .= substr($tmp, 0, $pos);
                 break;
