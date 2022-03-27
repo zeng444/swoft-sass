@@ -229,7 +229,7 @@ class UserLogic
      */
     public function userCount(): int
     {
-        return User::count();
+        return User::where('isDeleted', 0)->count(); //where([['bindMobile', '!=', ''],['seatNo', '!=', ''], ['isDeleted', 0]])->
     }
 
 
@@ -263,8 +263,14 @@ class UserLogic
         if (User::where('account', $account)->where('isDeleted', 0)->useWritePdo()->first(['id'])) {
             throw new LogicException('账户已经存在，无法重复注册');
         }
-        if (!$this->userRoleLogic->getRoleById($roleId, ['id'])) {
+
+        /** @var UserRole $role */
+        $role = $this->userRoleLogic->getRoleById($roleId, ['id', 'isSuper']);
+        if (!$role) {
             throw new LogicException('账户角色不存在');
+        }
+        if ($role->getIsSuper() == 1) {
+            throw new LogicException('禁止加入超级管理员角色');
         }
         if ($groupId && !$this->userGroupLogic->getGroupById($groupId, ['id'])) {
             throw new LogicException('账户分组不存在');
@@ -501,6 +507,7 @@ class UserLogic
      */
     public function getUserNickName(int $userId): string
     {
+        /** @var User $user */
         $user = $this->getUserById($userId);
         return $user ? $user->getNickName() : '';
     }
