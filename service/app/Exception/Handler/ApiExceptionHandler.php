@@ -20,7 +20,7 @@ class ApiExceptionHandler extends AbstractHttpErrorHandler
     public function handle(Throwable $except, Response $response): Response
     {
         $apiResponse = \Swoft::getBean(Response::class);
-        $msg = env('APP_ENV') !== 'dev' ? sprintf('%s'.PHP_EOL.'%s'.PHP_EOL, $except->getMessage(), $except->getTraceAsString()) : '系统错误，请联系管理员';
+        $msg = env('APP_ENV') === 'DEV' ? sprintf('%s'.PHP_EOL.'%s'.PHP_EOL, $except->getMessage(), $except->getTraceAsString()) : '系统错误，请联系管理员';
         return $response->withData($apiResponse->error($msg));
     }
 }

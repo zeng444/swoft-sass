@@ -38,7 +38,7 @@ class RpcExceptionHandler extends RpcErrorHandler
         // Debug is false
         if (!APP_DEBUG) {
             // just show error message
-            if ($e instanceof DbException) {
+            if ($e instanceof DbException && env('APP_ENV') !== 'DEV' ) {
                 $error   = Error::new($e->getCode(), '系统错误，请联系管理员', null);
             }else{
                 $error = Error::new($e->getCode(), $e->getMessage(), null);
