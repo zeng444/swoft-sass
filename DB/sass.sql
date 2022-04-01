@@ -93,7 +93,7 @@ CREATE TABLE `selector_option` (
   `createdAt` timestamp NULL DEFAULT NULL,
   `updatedAt` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `tenantId` (`tenantId`,`value`)
+  UNIQUE KEY `tenantId` (`tenantId`,`value`,`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='控件选项';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
