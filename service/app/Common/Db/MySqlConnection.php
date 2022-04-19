@@ -61,4 +61,24 @@ class MySqlConnection extends \Swoft\Db\Connection\MySqlConnection
     {
         return intval(\context()->get(self::CONTEXT_TENANT_ID));
     }
+
+    /**
+     * 不适用注入
+     * @param Closure $callback
+     * @return mixed|void
+     */
+    public static function noTenant(Closure $callback)
+    {
+        /** @var MySqlConnection $mySqlConnection */
+        $mySqlConnection = \Swoft::getBean(MySqlConnection::class);
+        $currentTenantId = (string)$mySqlConnection->getTenantId();
+        try {
+            $mySqlConnection->setTenantId('');
+            $result = $callback($currentTenantId);
+            $mySqlConnection->setTenantId($currentTenantId);
+            return $result;
+        }catch (\Exception $exception){
+            $mySqlConnection->setTenantId($currentTenantId);
+        }
+    }
 }
