@@ -28,14 +28,14 @@ nginx.conf需要传递IP和SCHEME信息
 
 ```
 server {
-listen 80;
-server_name cat.cn;
-location / {
-proxy_pass http://swoft-cat:18306;
-proxy_set_header X-Real-IP $remote_addr;
-proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-proxy_set_header REQUEST_SCHEME $scheme;
-}
+    listen 80;
+    server_name cat.cn;
+    location / {
+        proxy_pass http://swoft-cat:18306;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header REQUEST_SCHEME $scheme;
+    }
 }
 
 ```
@@ -50,7 +50,7 @@ proxy_set_header REQUEST_SCHEME $scheme;
 - 方法
 
 
-```
+```php
 (\Swoft::getBean(ServiceRpc::class))->handle(Closure $callback, string $serviceCode = '', string $dbName = ''): void
 ```
 
@@ -63,8 +63,6 @@ proxy_set_header REQUEST_SCHEME $scheme;
 |dbName | string     |   指定向某台代号下的指定服务的指定数据库发送，默认所有数据库  |
 
 - 示例
-
-
 
 ```php
 /**
@@ -83,10 +81,10 @@ protected $aclRouteService;
 */
 public function test(string $serviceCode, string $database): bool
 {
-$aclRouteService = $this->aclRouteService;
-$result = (\Swoft::getBean(ServiceRpc::class))->handle(static function (string $serviceCode, string $dbName) use ($aclRouteService) {
-return $aclRouteService->build($data)
-}, $serviceCode, $database);
+    $aclRouteService = $this->aclRouteService;
+        $result = (\Swoft::getBean(ServiceRpc::class))->handle(static function (string $serviceCode, string $dbName) use ($aclRouteService) {
+        return $aclRouteService->build($data)
+    }, $serviceCode, $database);
 }
 ```
 
@@ -95,13 +93,13 @@ return $aclRouteService->build($data)
 
 - 说明
 
-租客凭证决定如何访问服务，但特殊资源需要通过租客ID，访问对应的服务，如资源类，像系统菜单批量更新，可以采用 App\Common\Remote\TenantRpc实现，特别注意的是只有当当前不存在凭证时才能调用此方法
+租客凭证决定如何访问服务，但特殊资源需要通过租客ID，访问对应的服务，如资源类，像系统菜单批量更新，可以采用 App\Common\Remote\TenantRpc实现，特别注意的是只有当前不存在凭证时才能调用此方法
 
 
 - 方法
 
 
-```
+```php
 (\Swoft::getBean(TenantRpc::class))->handle(Closure $callback, int $tenantId = null): void
 ```
 
@@ -135,49 +133,49 @@ $paymentLogic->notify($raw, $paymentHeader);
 
 #### 获取当前登录用户
 
-```
+```php
 currentUserId(): int
 ```
 
 #### 获取当前登录用户分组
 
-```
+```php
 currentGroupId(): int
 ```
 
 #### 获取当前租户
 
-```
+```php
 currentTenantId(): int
 ```
 
 #### 获取当前用户会话
 
-```
+```php
 session()
 ```
 
 #### 获取当前用户扩展信息
 
-```
+```php
 session()->->getExtendedData(): array
 ```
 
 或
 
-```
+```php
 sessionExtData(): array
 ```
 
 #### 判断当前用户是否为超级管理员
 
-```
+```php
 currentIsSuper(): bool
 ```
 
 #### 判断当前用户数据读取权限
 
-```
+```php
 currentReader(): string
 ```
 
@@ -201,32 +199,32 @@ currentReader(): string
 ```php
 ### 问题
 $model = Menu::where([
-['id', 3],
-['tenantId', 0]
+    ['id', 3],
+    ['tenantId', 0]
 ]);
 /** @var Menu $menu */
 $menu = $model->first();
 $menu->setSort(100);
 $menu->save();
 //生成SQL错误强制注入了当前的tenantId在保存条件时
-UPDATE `menu` SET `sort` = 100, `updatedAt` = '2022-04-19 12:02:54' WHERE `id` = 3 AND tenantId = 1
+//UPDATE `menu` SET `sort` = 100, `updatedAt` = '2022-04-19 12:02:54' WHERE `id` = 3 AND tenantId = 1
 
 ### 改写为下面方式更新来解决
 
 Menu::where([
-['id', 3],
-['tenantId',0]
+    ['id', 3],
+    ['tenantId',0]
 ])->update(['sort'=> 100]);
 ```
 #### 停止注入的闭包函数
 
 - 对于tenantId始终等于0的数据表使用
 
-```
+```php
 $result = \App\Common\Db\MySqlConnection::noTenant( static function ( $currentTenantId ) {
 $model = Menu::where([
-['id', 3],
-['tenantId', 0]
+    ['id', 3],
+    ['tenantId', 0]
 ]);
 /** @var Menu $menu */
 $menu = $model->first();
@@ -241,19 +239,19 @@ return $menu->save();
 #### 获取当前请求服务的租户id
 
 
-```
+```php
 currentTenantId(): int
 ```
 
 #### 获取当前运行得服务代号
 
-```
+```php
 currentServiceCode(): string
 ```
 
 #### 获取当前数据库
 
-```
+```php
 currentDB(): string
 ```
 
@@ -276,7 +274,7 @@ currentDB(): string
 
 - 持久化异步调用
 
-```
+```php
 #启动进程池
 php bin/swoft process:start
 ```
@@ -286,9 +284,7 @@ php bin/swoft process:start
 App\Common\Async\Client::async(OrderLogic::class, 'add', [$line]);
 ```
 
-
 - 批量
-
 
 ```php
 #协程任务投递
@@ -300,7 +296,7 @@ App\Common\Async\Client::async(OrderLogic::class, 'add', [$line]);
 
 ### 同步调用
 
-```
+```php
 \App\Common\Caller\Client::call($className, $methodName, $params)
 ```
 
@@ -342,22 +338,22 @@ $excelReader->setStartRow(2);
 $excelReader->setRule('F',Reader::DATETIME_ROLE);
 $excelReader->setRule('H',Reader::STRING_ROLE);
 $excelReader->setRules([
-'F' => Reader::DATETIME_ROLE,
-'H' => Reader::STRING_ROLE
+    'F' => Reader::DATETIME_ROLE,
+    'H' => Reader::STRING_ROLE
 ]);
 ```
 
 ```php
 $excelReader->forEach(static function ($line, $isEnd, $row) {
-print_r([
-$row, $line
-]);
+    print_r([
+        $row, $line
+    ]);
 });
 ```
 
 ```php
 $excelReader->chunk(static function ($rows, $isEnd) {
-print_r(rows);
+    print_r(rows);
 },20);
 ```
 
@@ -365,12 +361,12 @@ print_r(rows);
 
 > 支持格式 'Xlsx', 'Csv', 'Xls', 'Ods', 'Html', 'Tcpdf', 'Dompdf', 'Mpdf'
 
-```
+```php
 $writer = new \App\Common\Excel\Writer();
 $writer->setTitle('批次到处任务');
 $writer->setHeader(['序号', '车牌号', '车主姓名', '联系电话', '询价状态', '失败原因']);
 foreach ($rows as $row) {
-$writer->writeRow($row);
+    $writer->writeRow($row);
 }
 $dist = 'runtime/20210930.xlsx';
 $writer->save($dist, 'Xlsx');
