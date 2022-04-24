@@ -149,7 +149,7 @@ class Server
         try {
             return [true, CallerClient::call($data['className'], $data['methodName'], $data['params']), ''];
         } catch (Throwable $e) {
-            return [false, null, $e->getMessage()];
+            return [false, null, env('APP_ENV') === 'DEV' ? $e->getMessage() . $e->getTraceAsString() : $e->getMessage()];
         }
     }
 
