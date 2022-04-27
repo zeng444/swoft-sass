@@ -2,10 +2,10 @@
 
 namespace Application\Core\Models;
 
+use Phalcon\Db;
 use Phalcon\Di;
 use Phalcon\Validation;
 use Phalcon\Mvc\Model\Message;
-use Phalcon\Mvc\Model\Transaction\Failed as TxFailed;
 use Phalcon\Validation\Validator\Digit as DigitValidator;
 use Phalcon\Validation\Validator\StringLength as StringLength;
 use Phalcon\Validation\Validator\Between as BetweenValidation;
@@ -219,7 +219,7 @@ class ServiceDatabase extends BaseModel
      */
     public static function automaticSelectDb(): int
     {
-        $sql = "SELECT 
+        $sql = "SELECT  service_database.`id`,service_database.`database`,t2.quantity FROM (SELECT 
                   dbName,
                   COUNT(*) AS `quantity` 
                 FROM
@@ -231,22 +231,18 @@ class ServiceDatabase extends BaseModel
                     INNER JOIN `tenant_service` 
                       ON `tenant`.id = tenant_service.`tenantId` 
                   HAVING `tenant`.`isAvailable` = 1) AS t 
-                GROUP BY dbName ORDER BY `quantity`  ASC limit 1";
+                GROUP BY dbName)  AS t2
+                RIGHT JOIN `service_database`
+                ON t2.dbName = service_database.`database`
+                ORDER BY quantity ASC ,id ASC
+                LIMIT 1";
         $self = new self();
+        /** @var \Phalcon\Db\Adapter\Pdo\Mysql $db */
         $db = $self->getWriteConnection();
-        $result = $db->fetchOne($sql);
+        $result = $db->fetchOne($sql,Db::FETCH_ASSOC);
         if(!$result){
             return 0;
         }
-        $serviceDatabase = ServiceDatabase::findFirst([
-            'conditions'=>'database = :database:',
-            'bind'=>[
-                'database'=>$result['dbName']
-            ]
-        ]);
-        if(!$serviceDatabase){
-            return 0;
-        }
-        return $serviceDatabase->id;
+        return $result['id'];
     }
 }
