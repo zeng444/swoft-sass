@@ -88,16 +88,21 @@ class Writer implements WriterInterface
     }
 
 
+
     /**
      * Author:Robert
      *
      * @param string $dist
      * @param string $writeType
+     * @param string $csvEncoding
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
-    public function save(string $dist, string $writeType = 'Xlsx'): void
+    public function save(string $dist, string $writeType = 'Xlsx', string $csvEncoding = ''): void
     {
         $writer = IOFactory::createWriter($this->spreadsheet, $writeType); //按照指定格式生成Excel文件
+        if ($writeType === 'Csv' && $csvEncoding) {
+            $writer->setOutputEncoding($csvEncoding);
+        }
         $writer->save($dist);
         $this->spreadsheet->disconnectWorksheets();
         unset($this->spreadsheet);

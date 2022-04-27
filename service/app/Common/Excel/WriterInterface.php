@@ -12,6 +12,6 @@ interface WriterInterface
 
     public function writeRow(array $row): void;
 
-    public function save(string $dist, string $writeType = 'Xlsx'): void;
+    public function save(string $dist, string $writeType = 'Xlsx', string $csvEncoding = ''): void;
 
 }
