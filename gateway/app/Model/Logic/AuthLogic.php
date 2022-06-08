@@ -57,7 +57,7 @@ class AuthLogic implements AccountTypeInterface
 
         /** @var Balancer $balancer */
         $balancer = \Swoft::getBean(Balancer::class);
-        $balancer->setHostName($extData['serviceCode']);
+        $balancer->setHostName((string)$extData['serviceCode']);
         /** @var Extender $extender */
         $extender = \Swoft::getBean(Extender::class);
         $extender->setExtData($extData);

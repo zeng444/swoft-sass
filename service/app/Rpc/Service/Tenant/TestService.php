@@ -2,7 +2,6 @@
 
 namespace App\Rpc\Service\Tenant;
 
-use App\Model\Constant\Message;
 use App\Model\Logic\Tenant\MessageLogic;
 use App\Model\Logic\Tenant\OrderAccountLogic;
 use App\Rpc\Lib\Tenant\TestInterface;

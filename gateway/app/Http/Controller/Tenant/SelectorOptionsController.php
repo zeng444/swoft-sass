@@ -18,7 +18,7 @@ use Throwable;
 /**
  * Author:Robert
  *
- * Class OrderAccountController
+ * Class SelectorOptionsController
  * @Controller("selectorOptions")
  *  * @Middlewares({
  *     @Middleware(AuthMiddleware::class)
