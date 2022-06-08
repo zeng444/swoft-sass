@@ -46,6 +46,13 @@ class TenantService extends BaseModel
 
     /**
      *
+     * @var integer
+     * @Column(type="integer", length=200, nullable=false)
+     */
+    public $databaseId;
+
+    /**
+     *
      * @var string
      * @Column(type="string", length=80, nullable=true)
      */
@@ -120,21 +127,24 @@ class TenantService extends BaseModel
             );
         }
         $validator->add(
-            ["tenantId","serviceId"],
+            ["tenantId","serviceId", "databaseId"],
             new BetweenValidation(
                 [
                     "model" => $this,
                     "minimum" => [
                         "tenantId" => 0,
-                         "serviceId" => 0
+                        "serviceId" => 0,
+                        "databaseId" => 0
                     ],
                     "maximum" => [
                         "tenantId" => 4294967295,
-                         "serviceId" => 4294967295
+                         "serviceId" => 4294967295,
+                         "databaseId" => 4294967295
                     ],
                     "message" => [
                         "tenantId" => "租户Id格式错误，字符范围应该在0-4294967295之间",
-                         "serviceId" => "服务ID格式错误，字符范围应该在0-4294967295之间"
+                         "serviceId" => "服务ID格式错误，字符范围应该在0-4294967295之间",
+                         "databaseId" => "数据库ID格式错误，字符范围应该在0-4294967295之间"
                     ]
                 ]
             )

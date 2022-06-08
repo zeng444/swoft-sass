@@ -71,7 +71,6 @@ return [
         'middlewares' => [
             \App\Http\Middleware\FavIconMiddleware::class,
             \App\Http\Middleware\CrossMiddleware::class,
-            \App\Http\Middleware\AclMiddleware::class,
         ],
         'afterMiddlewares' => [
             \Swoft\Http\Server\Middleware\ValidatorMiddleware::class,

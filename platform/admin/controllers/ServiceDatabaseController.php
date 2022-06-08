@@ -76,6 +76,13 @@ class ServiceDatabaseController extends ControllerBase
                 if ($model->save($postData) === false) {
                     $this->apiError($model->getFirstError());
                 }
+                if (isset($postData['id']) && $postData['id'] > 0) {
+                    $sql = "UPDATE `tenant_service` SET `dbName`=:dbName  WHERE databaseId=:databaseId";
+                    $model->getWriteConnection()->execute($sql, [
+                        'dbName' => $postData['database'],
+                        'databaseId' => $postData['id'],
+                    ]);
+                }
                 $this->apiSuccess([
                     'success' => '1'
                 ]);

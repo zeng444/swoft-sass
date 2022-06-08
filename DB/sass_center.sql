@@ -357,6 +357,7 @@ CREATE TABLE `tenant_service` (
   `tenantId` int(10) unsigned NOT NULL COMMENT '租户Id',
   `serverId` int(11) DEFAULT NULL COMMENT '服务器ID',
   `serviceId` int(200) unsigned NOT NULL COMMENT '服务ID',
+  `databaseId` int(10) unsigned NOT NULL COMMENT '数据库ID',
   `dbName` varchar(80) DEFAULT NULL COMMENT '数据库',
   `createdAt` timestamp NULL DEFAULT NULL,
   `updatedAt` timestamp NULL DEFAULT NULL,
@@ -371,7 +372,7 @@ CREATE TABLE `tenant_service` (
 
 LOCK TABLES `tenant_service` WRITE;
 /*!40000 ALTER TABLE `tenant_service` DISABLE KEYS */;
-INSERT INTO `tenant_service` VALUES (1,1,5,2,'sass','2021-12-02 14:11:17','2021-12-02 14:11:17');
+INSERT INTO `tenant_service` VALUES (1,1,5,2,2,'sass','2021-12-02 14:11:17','2021-12-02 14:11:17');
 /*!40000 ALTER TABLE `tenant_service` ENABLE KEYS */;
 UNLOCK TABLES;
 
